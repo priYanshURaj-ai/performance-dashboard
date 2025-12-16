@@ -1,0 +1,302 @@
+{
+  "lastUpdated": "2025-12-12T21:30:00+05:30",
+  "generatedAt": "2025-12-12T21:30:00.000Z",
+  "boardInfo": {
+    "name": "RE Platform 2.0 & Platform 2.0",
+    "project": "PAI",
+    "components": ["RE Platform 2.0", "Platform 2.0"]
+  },
+  "periods": {
+    "7days": {
+      "label": "Last 7 Days",
+      "startDate": "2025-12-05",
+      "endDate": "2025-12-12"
+    },
+    "15days": {
+      "label": "Last 15 Days",
+      "startDate": "2025-11-27",
+      "endDate": "2025-12-12"
+    },
+    "30days": {
+      "label": "Last 30 Days",
+      "startDate": "2025-11-12",
+      "endDate": "2025-12-12"
+    }
+  },
+  "teamSummary": {
+    "7days": {
+      "total": 45,
+      "done": 28,
+      "inProgress": 10,
+      "uat": 4,
+      "toDo": 3
+    },
+    "15days": {
+      "total": 92,
+      "done": 58,
+      "inProgress": 18,
+      "uat": 9,
+      "toDo": 7
+    },
+    "30days": {
+      "total": 168,
+      "done": 112,
+      "inProgress": 28,
+      "uat": 16,
+      "toDo": 12
+    }
+  },
+  "members": [
+    {
+      "name": "Sreerag Unnikrishnan",
+      "email": "sreerag.unnikrishnan@paytm.com",
+      "avatar": "SU",
+      "metrics": {
+        "7days": { "total": 3, "done": 2, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "15days": { "total": 5, "done": 3, "inProgress": 1, "uat": 1, "toDo": 0 },
+        "30days": { "total": 8, "done": 5, "inProgress": 2, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Dinesh Kumar",
+      "email": "dinesh34.kumar@paytm.com",
+      "avatar": "DK",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "15days": { "total": 4, "done": 3, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Huan Zheng",
+      "email": "huan.zheng@paytm.com",
+      "avatar": "HZ",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 0, "uat": 1, "toDo": 0 },
+        "15days": { "total": 4, "done": 2, "inProgress": 1, "uat": 1, "toDo": 0 },
+        "30days": { "total": 7, "done": 4, "inProgress": 2, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Keshav Sharma",
+      "email": "keshav4.sharma@paytm.com",
+      "avatar": "KS",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "15days": { "total": 4, "done": 2, "inProgress": 1, "uat": 0, "toDo": 1 },
+        "30days": { "total": 7, "done": 4, "inProgress": 2, "uat": 0, "toDo": 1 }
+      }
+    },
+    {
+      "name": "Kshitiz Gupta",
+      "email": "kshitiz1.gupta@paytm.com",
+      "avatar": "KG",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 0, "uat": 0, "toDo": 1 },
+        "15days": { "total": 4, "done": 3, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Pankaj Sirohi",
+      "email": "pankaj.sirohi@paytm.com",
+      "avatar": "PS",
+      "metrics": {
+        "7days": { "total": 2, "done": 2, "inProgress": 0, "uat": 0, "toDo": 0 },
+        "15days": { "total": 4, "done": 3, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "30days": { "total": 8, "done": 6, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Rohit Mishra",
+      "email": "rohit8.mishra@paytmpayments.com",
+      "avatar": "RM",
+      "metrics": {
+        "7days": { "total": 1, "done": 1, "inProgress": 0, "uat": 0, "toDo": 0 },
+        "15days": { "total": 3, "done": 2, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "30days": { "total": 6, "done": 4, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Arijit Bhattacharyya",
+      "email": "Arijit.bhattacharyya@paytm.com",
+      "avatar": "AB",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "15days": { "total": 4, "done": 2, "inProgress": 1, "uat": 1, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Aditya Shahi",
+      "email": "aditya.shahi@paytm.com",
+      "avatar": "AS",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 0, "uat": 1, "toDo": 0 },
+        "15days": { "total": 4, "done": 3, "inProgress": 0, "uat": 1, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Amit Tomar",
+      "email": "amit2.tomar@paytm.com",
+      "avatar": "AT",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "15days": { "total": 4, "done": 2, "inProgress": 1, "uat": 0, "toDo": 1 },
+        "30days": { "total": 6, "done": 4, "inProgress": 1, "uat": 0, "toDo": 1 }
+      }
+    },
+    {
+      "name": "Arjit Gupta",
+      "email": "arjit.gupta@paytm.com",
+      "avatar": "AG",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 0, "uat": 0, "toDo": 1 },
+        "15days": { "total": 4, "done": 3, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 0, "toDo": 1 }
+      }
+    },
+    {
+      "name": "Britelyne Dass",
+      "email": "britelyne.dass@paytm.com",
+      "avatar": "BD",
+      "metrics": {
+        "7days": { "total": 2, "done": 2, "inProgress": 0, "uat": 0, "toDo": 0 },
+        "15days": { "total": 4, "done": 3, "inProgress": 0, "uat": 1, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Eshita Gupta",
+      "email": "eshita1.gupta@paytm.com",
+      "avatar": "EG",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "15days": { "total": 4, "done": 2, "inProgress": 1, "uat": 1, "toDo": 0 },
+        "30days": { "total": 6, "done": 4, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Girish Kumar",
+      "email": "girish3.kumar@paytm.com",
+      "avatar": "GK",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 0, "uat": 1, "toDo": 0 },
+        "15days": { "total": 4, "done": 2, "inProgress": 1, "uat": 1, "toDo": 0 },
+        "30days": { "total": 7, "done": 4, "inProgress": 2, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Pappu Kumar",
+      "email": "pappu1.kumar@paytm.com",
+      "avatar": "PK",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "15days": { "total": 3, "done": 2, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "30days": { "total": 6, "done": 4, "inProgress": 1, "uat": 0, "toDo": 1 }
+      }
+    },
+    {
+      "name": "Sanyam Jain",
+      "email": "sanyam1.jain@paytm.com",
+      "avatar": "SJ",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 0, "uat": 0, "toDo": 1 },
+        "15days": { "total": 4, "done": 3, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 0, "toDo": 1 }
+      }
+    },
+    {
+      "name": "Deepak Rawat",
+      "email": "deepak5.rawat@paytm.com",
+      "avatar": "DR",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "15days": { "total": 4, "done": 3, "inProgress": 0, "uat": 1, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Prakarsh Srivastava",
+      "email": "prakarsh.srivastava@paytm.com",
+      "avatar": "PS",
+      "metrics": {
+        "7days": { "total": 2, "done": 2, "inProgress": 0, "uat": 0, "toDo": 0 },
+        "15days": { "total": 4, "done": 3, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Abhishek Keshari",
+      "email": "abhishek.keshari@paytm.com",
+      "avatar": "AK",
+      "metrics": {
+        "7days": { "total": 1, "done": 1, "inProgress": 0, "uat": 0, "toDo": 0 },
+        "15days": { "total": 3, "done": 2, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "30days": { "total": 6, "done": 4, "inProgress": 1, "uat": 0, "toDo": 1 }
+      }
+    },
+    {
+      "name": "Anand Yadav",
+      "email": "anand3.yadav@paytm.com",
+      "avatar": "AY",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "15days": { "total": 4, "done": 2, "inProgress": 1, "uat": 1, "toDo": 0 },
+        "30days": { "total": 7, "done": 4, "inProgress": 2, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Anshul Chauhan",
+      "email": "anshul1.chauhan@paytm.com",
+      "avatar": "AC",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 0, "uat": 1, "toDo": 0 },
+        "15days": { "total": 4, "done": 3, "inProgress": 0, "uat": 1, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Apurva Ninave",
+      "email": "apurva.ninave@paytm.com",
+      "avatar": "AN",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "15days": { "total": 3, "done": 2, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "30days": { "total": 6, "done": 4, "inProgress": 1, "uat": 0, "toDo": 1 }
+      }
+    },
+    {
+      "name": "Babaji Komali",
+      "email": "babaji.komali@paytm.com",
+      "avatar": "BK",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 0, "uat": 0, "toDo": 1 },
+        "15days": { "total": 4, "done": 3, "inProgress": 0, "uat": 1, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Deepika Suyal",
+      "email": "deepika.suyal@paytm.com",
+      "avatar": "DS",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "15days": { "total": 4, "done": 2, "inProgress": 1, "uat": 1, "toDo": 0 },
+        "30days": { "total": 7, "done": 4, "inProgress": 2, "uat": 1, "toDo": 0 }
+      }
+    },
+    {
+      "name": "Tushar Aggarwal",
+      "email": "tushar1.aggarwal@paytm.com",
+      "avatar": "TA",
+      "metrics": {
+        "7days": { "total": 2, "done": 1, "inProgress": 0, "uat": 0, "toDo": 1 },
+        "15days": { "total": 4, "done": 3, "inProgress": 1, "uat": 0, "toDo": 0 },
+        "30days": { "total": 7, "done": 5, "inProgress": 1, "uat": 0, "toDo": 1 }
+      }
+    }
+  ]
+}
+
