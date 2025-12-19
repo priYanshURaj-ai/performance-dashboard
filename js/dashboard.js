@@ -432,8 +432,8 @@ function renderMembersTable() {
                 <td><span class="${badgeClass('total', metrics.total)}">${metrics.total}</span></td>
                 <td>
                     <div class="bandwidth-cell">
-                        <span class="bandwidth-estimated">${metrics.estimatedHours || 0}h est</span>
-                        <span class="bandwidth-logged ${metrics.hoursLogged > 0 ? 'has-value' : ''}">${metrics.hoursLogged || 0}h logged</span>
+                        <span class="bandwidth-estimated ${(metrics.estimatedHours || 0) === 0 ? 'zero' : ''}">${metrics.estimatedHours || 0}h est</span>
+                        <span class="bandwidth-logged ${metrics.hoursLogged > 0 ? 'has-value' : 'zero'}">${metrics.hoursLogged || 0}h logged</span>
                     </div>
                 </td>
                 <td><span class="${badgeClass('done', metrics.done)}">${metrics.done}</span></td>
@@ -457,7 +457,7 @@ function renderMembersTable() {
 
     elements.membersTableBody.innerHTML = html || `
         <tr class="no-data-row">
-            <td colspan="7">
+            <td colspan="8">
                 <div class="empty-state">
                     <div class="empty-icon">📭</div>
                     <div class="empty-text">No team members found</div>
@@ -682,7 +682,7 @@ function debounce(func, wait) {
 function showError(message) {
     elements.membersTableBody.innerHTML = `
         <tr>
-            <td colspan="7" class="no-data">
+            <td colspan="8" class="no-data">
                 <div class="no-data-icon">⚠️</div>
                 <p>${message}</p>
             </td>
