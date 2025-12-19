@@ -35,22 +35,6 @@
             </div>
         </header>
 
-        <!-- Period Selector -->
-        <div class="period-selector">
-            <button class="period-btn active" data-period="7days">
-                <span class="period-icon">📅</span>
-                <span class="period-label">Last 7 Days</span>
-            </button>
-            <button class="period-btn" data-period="15days">
-                <span class="period-icon">📆</span>
-                <span class="period-label">Last 15 Days</span>
-            </button>
-            <button class="period-btn" data-period="30days">
-                <span class="period-icon">🗓️</span>
-                <span class="period-label">Last 30 Days</span>
-            </button>
-        </div>
-
         <!-- Sprint Bandwidth Overview -->
         <div class="bandwidth-overview">
             <div class="bandwidth-overview-header">
@@ -83,6 +67,22 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Period Selector (moved below Sprint Overview) -->
+        <div class="period-selector">
+            <button class="period-btn active" data-period="7days">
+                <span class="period-icon">📅</span>
+                <span class="period-label">Last 7 Days</span>
+            </button>
+            <button class="period-btn" data-period="15days">
+                <span class="period-icon">📆</span>
+                <span class="period-label">Last 15 Days</span>
+            </button>
+            <button class="period-btn" data-period="30days">
+                <span class="period-icon">🗓️</span>
+                <span class="period-label">Last 30 Days</span>
+            </button>
         </div>
 
         <!-- Summary Cards -->
@@ -154,6 +154,10 @@
                                 </th>
                                 <th class="sortable" data-sort="total">
                                     <span>📊 Total</span>
+                                    <span class="sort-icon">↕</span>
+                                </th>
+                                <th class="sortable" data-sort="bandwidth">
+                                    <span>⏱️ Bandwidth</span>
                                     <span class="sort-icon">↕</span>
                                 </th>
                                 <th class="sortable" data-sort="done">

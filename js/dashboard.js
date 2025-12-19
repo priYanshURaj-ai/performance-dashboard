@@ -430,6 +430,12 @@ function renderMembersTable() {
                     </div>
                 </td>
                 <td><span class="${badgeClass('total', metrics.total)}">${metrics.total}</span></td>
+                <td>
+                    <div class="bandwidth-cell">
+                        <span class="bandwidth-estimated">${metrics.estimatedHours || 0}h est</span>
+                        <span class="bandwidth-logged ${metrics.hoursLogged > 0 ? 'has-value' : ''}">${metrics.hoursLogged || 0}h logged</span>
+                    </div>
+                </td>
                 <td><span class="${badgeClass('done', metrics.done)}">${metrics.done}</span></td>
                 <td><span class="${badgeClass('progress', metrics.inProgress)}">${metrics.inProgress}</span></td>
                 <td><span class="${badgeClass('uat', metrics.uat)}">${metrics.uat}</span></td>

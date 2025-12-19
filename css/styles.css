@@ -882,6 +882,37 @@ body {
     text-shadow: none;
 }
 
+/* Bandwidth Cell */
+.bandwidth-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.bandwidth-estimated {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+.bandwidth-logged {
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    padding: 2px 8px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    display: inline-block;
+}
+
+.bandwidth-logged.has-value {
+    color: var(--accent-cyan);
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 212, 255, 0.05));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
 /* Progress Bar */
 .progress-cell {
     min-width: 160px;

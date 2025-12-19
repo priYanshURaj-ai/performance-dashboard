@@ -3,36 +3,25 @@
     "nodes": [
         {
             "parameters": {
-                "content": "## 📊 Performance Dashboard Workflow\n\n### Purpose\nFetches JIRA data daily at 9:30 PM IST and generates performance metrics for all team members across 3 time periods:\n- **Last 7 Days**\n- **Last 15 Days**\n- **Last 30 Days**\n\n### Flow\n```\nDaily 9:30 PM IST\n    ↓\nFetch JIRA (30 days - single call)\n    ↓\nFilter & Aggregate Per Period\n    ↓\nSend to Dashboard\n```\n\n### Optimization\nSingle JIRA call for 30 days, then filter in code for 7/15/30 day periods.\n\n### Components (DYNAMIC)\nBot Engine, RE Platform 2.0\n\n### Statuses Tracked\n- To Do\n- In Progress\n- UAT\n- Done"
+                "content": "## 📊 Performance Dashboard Workflow\n\n### Purpose\nFetches JIRA data daily at 9:30 PM IST and generates performance metrics for all team members across 3 time periods:\n- **Last 7 Days**\n- **Last 15 Days**\n- **Last 30 Days**\n\n### Flow\n```\nDaily 9:30 PM IST\n    ↓\nFetch JIRA (30 days - single call)\n    ↓\nFilter & Aggregate Per Period\n    ↓\nSend to Dashboard\n```\n\n### Features\n- Multi-component support\n- Estimated hours from JIRA\n- Hours logged tracking\n- Sprint metrics\n\n### Components (DYNAMIC)\nBot Engine, RE Platform 2.0"
             },
             "id": "workflow-doc",
             "name": "📋 Documentation",
             "type": "n8n-nodes-base.stickyNote",
             "typeVersion": 1,
-            "position": [
-                -200,
-                200
-            ]
+            "position": [-200, 200]
         },
         {
             "parameters": {
                 "rule": {
-                    "interval": [
-                        {
-                            "field": "cronExpression",
-                            "expression": "0 16 * * *"
-                        }
-                    ]
+                    "interval": [{ "field": "cronExpression", "expression": "0 16 * * *" }]
                 }
             },
             "id": "daily-trigger",
             "name": "Daily 9:30 PM IST",
             "type": "n8n-nodes-base.scheduleTrigger",
             "typeVersion": 1.2,
-            "position": [
-                100,
-                400
-            ],
+            "position": [100, 400],
             "notes": "9:30 PM IST = 4:00 PM UTC (16:00)"
         },
         {
@@ -41,23 +30,17 @@
             "name": "Manual Trigger",
             "type": "n8n-nodes-base.manualTrigger",
             "typeVersion": 1,
-            "position": [
-                100,
-                600
-            ]
+            "position": [100, 600]
         },
         {
             "parameters": {
-                "jsCode": "// ========================================\n// CONFIGURATION - MULTI-COMPONENT SUPPORT\n// ========================================\nconst BOARD_COMPONENTS = ['Bot Engine', 'RE Platform 2.0']; // ADD/REMOVE components here\nconst PROJECT_KEY = 'PAI';\nconst HOURS_PER_DAY = 8; // Working hours per day\n// ========================================\n\n// Team Members\nconst teamMembers = [\n  { name: \"Sreerag Unnikrishnan\", email: \"sreerag.unnikrishnan@paytm.com\", avatar: \"SU\" },\n  { name: \"Dinesh Kumar\", email: \"dinesh34.kumar@paytm.com\", avatar: \"DK\" },\n  { name: \"Huan Zheng\", email: \"huan.zheng@paytm.com\", avatar: \"HZ\" },\n  { name: \"Keshav Sharma\", email: \"keshav4.sharma@paytm.com\", avatar: \"KS\" },\n  { name: \"Kshitiz Gupta\", email: \"kshitiz1.gupta@paytm.com\", avatar: \"KG\" },\n  { name: \"Pankaj Sirohi\", email: \"pankaj.sirohi@paytm.com\", avatar: \"PS\" },\n  { name: \"Rohit Mishra\", email: \"rohit8.mishra@paytmpayments.com\", avatar: \"RM\" },\n  { name: \"Arijit Bhattacharyya\", email: \"Arijit.bhattacharyya@paytm.com\", avatar: \"AB\" },\n  { name: \"Aditya Shahi\", email: \"aditya.shahi@paytm.com\", avatar: \"AS\" },\n  { name: \"Amit Tomar\", email: \"amit2.tomar@paytm.com\", avatar: \"AT\" },\n  { name: \"Arjit Gupta\", email: \"arjit.gupta@paytm.com\", avatar: \"AG\" },\n  { name: \"Britelyne Dass\", email: \"britelyne.dass@paytm.com\", avatar: \"BD\" },\n  { name: \"Eshita Gupta\", email: \"eshita1.gupta@paytm.com\", avatar: \"EG\" },\n  { name: \"Girish Kumar\", email: \"girish3.kumar@paytm.com\", avatar: \"GK\" },\n  { name: \"Pappu Kumar\", email: \"pappu1.kumar@paytm.com\", avatar: \"PK\" },\n  { name: \"Sanyam Jain\", email: \"sanyam1.jain@paytm.com\", avatar: \"SJ\" },\n  { name: \"Deepak Rawat\", email: \"deepak5.rawat@paytm.com\", avatar: \"DR\" },\n  { name: \"Prakarsh Srivastava\", email: \"prakarsh.srivastava@paytm.com\", avatar: \"PS\" },\n  { name: \"Abhishek Keshari\", email: \"abhishek.keshari@paytm.com\", avatar: \"AK\" },\n  { name: \"Anand Yadav\", email: \"anand3.yadav@paytm.com\", avatar: \"AY\" },\n  { name: \"Anshul Chauhan\", email: \"anshul1.chauhan@paytm.com\", avatar: \"AC\" },\n  { name: \"Apurva Ninave\", email: \"apurva.ninave@paytm.com\", avatar: \"AN\" },\n  { name: \"Babaji Komali\", email: \"babaji.komali@paytm.com\", avatar: \"BK\" },\n  { name: \"Deepika Suyal\", email: \"deepika.suyal@paytm.com\", avatar: \"DS\" },\n  { name: \"Tushar Aggarwal\", email: \"tushar1.aggarwal@paytm.com\", avatar: \"TA\" }\n];\n\nconst today = new Date();\nconst formatDate = (date) => date.toISOString().split('T')[0];\nconst getDateDaysAgo = (days) => { const d = new Date(today); d.setDate(d.getDate() - days); return formatDate(d); };\n\n// ========================================\n// SPRINT CALCULATION\n// Sprints start on 1st and 3rd Monday of each month\n// ========================================\nconst getNthMondayOfMonth = (year, month, n) => {\n  const firstDay = new Date(year, month, 1);\n  const dayOfWeek = firstDay.getDay();\n  const firstMonday = dayOfWeek <= 1 ? 1 + (1 - dayOfWeek) : 1 + (8 - dayOfWeek);\n  const nthMonday = firstMonday + (n - 1) * 7;\n  return new Date(year, month, nthMonday);\n};\n\nconst getSprintDates = (referenceDate) => {\n  const year = referenceDate.getFullYear();\n  const month = referenceDate.getMonth();\n  const firstMonday = getNthMondayOfMonth(year, month, 1);\n  const thirdMonday = getNthMondayOfMonth(year, month, 3);\n  const nextMonth = month === 11 ? 0 : month + 1;\n  const nextYear = month === 11 ? year + 1 : year;\n  const nextFirstMonday = getNthMondayOfMonth(nextYear, nextMonth, 1);\n  \n  let currentSprint, previousSprint;\n  \n  if (referenceDate >= thirdMonday) {\n    currentSprint = {\n      name: `Sprint 2`, number: 2, startDate: thirdMonday,\n      endDate: new Date(nextFirstMonday.getTime() - 1),\n      month: referenceDate.toLocaleString('en-US', { month: 'short' }), year: year\n    };\n    previousSprint = {\n      name: `Sprint 1`, number: 1, startDate: firstMonday,\n      endDate: new Date(thirdMonday.getTime() - 1),\n      month: referenceDate.toLocaleString('en-US', { month: 'short' }), year: year\n    };\n  } else if (referenceDate >= firstMonday) {\n    currentSprint = {\n      name: `Sprint 1`, number: 1, startDate: firstMonday,\n      endDate: new Date(thirdMonday.getTime() - 1),\n      month: referenceDate.toLocaleString('en-US', { month: 'short' }), year: year\n    };\n    const prevMonth = month === 0 ? 11 : month - 1;\n    const prevYear = month === 0 ? year - 1 : year;\n    const prevThirdMonday = getNthMondayOfMonth(prevYear, prevMonth, 3);\n    previousSprint = {\n      name: `Sprint 2`, number: 2, startDate: prevThirdMonday,\n      endDate: new Date(firstMonday.getTime() - 1),\n      month: new Date(prevYear, prevMonth).toLocaleString('en-US', { month: 'short' }), year: prevYear\n    };\n  } else {\n    const prevMonth = month === 0 ? 11 : month - 1;\n    const prevYear = month === 0 ? year - 1 : year;\n    const prevThirdMonday = getNthMondayOfMonth(prevYear, prevMonth, 3);\n    currentSprint = {\n      name: `Sprint 2`, number: 2, startDate: prevThirdMonday,\n      endDate: new Date(firstMonday.getTime() - 1),\n      month: new Date(prevYear, prevMonth).toLocaleString('en-US', { month: 'short' }), year: prevYear\n    };\n    const prevFirstMonday = getNthMondayOfMonth(prevYear, prevMonth, 1);\n    previousSprint = {\n      name: `Sprint 1`, number: 1, startDate: prevFirstMonday,\n      endDate: new Date(prevThirdMonday.getTime() - 1),\n      month: new Date(prevYear, prevMonth).toLocaleString('en-US', { month: 'short' }), year: prevYear\n    };\n  }\n  \n  const countWorkingDays = (start, end) => {\n    let count = 0;\n    const current = new Date(start);\n    while (current <= end) {\n      const day = current.getDay();\n      if (day !== 0 && day !== 6) count++;\n      current.setDate(current.getDate() + 1);\n    }\n    return count;\n  };\n  \n  currentSprint.workingDays = countWorkingDays(currentSprint.startDate, currentSprint.endDate);\n  currentSprint.totalHours = currentSprint.workingDays * HOURS_PER_DAY;\n  const todayMidnight = new Date(referenceDate);\n  todayMidnight.setHours(23, 59, 59, 999);\n  currentSprint.elapsedWorkingDays = countWorkingDays(currentSprint.startDate, todayMidnight);\n  currentSprint.elapsedHours = currentSprint.elapsedWorkingDays * HOURS_PER_DAY;\n  currentSprint.remainingWorkingDays = currentSprint.workingDays - currentSprint.elapsedWorkingDays;\n  currentSprint.remainingHours = currentSprint.remainingWorkingDays * HOURS_PER_DAY;\n  currentSprint.sprintDay = currentSprint.elapsedWorkingDays;\n  currentSprint.label = `${currentSprint.month} ${currentSprint.name}`;\n  currentSprint.dateRange = `${formatDate(currentSprint.startDate)} to ${formatDate(currentSprint.endDate)}`;\n  \n  previousSprint.workingDays = countWorkingDays(previousSprint.startDate, previousSprint.endDate);\n  previousSprint.totalHours = previousSprint.workingDays * HOURS_PER_DAY;\n  previousSprint.elapsedWorkingDays = previousSprint.workingDays;\n  previousSprint.elapsedHours = previousSprint.totalHours;\n  previousSprint.remainingWorkingDays = 0;\n  previousSprint.remainingHours = 0;\n  previousSprint.sprintDay = previousSprint.workingDays;\n  previousSprint.label = `${previousSprint.month} ${previousSprint.name}`;\n  previousSprint.dateRange = `${formatDate(previousSprint.startDate)} to ${formatDate(previousSprint.endDate)}`;\n  \n  return { current: currentSprint, previous: previousSprint };\n};\n\nconst sprints = getSprintDates(today);\nconsole.log(`🏃 Current Sprint: ${sprints.current.label}`);\nconsole.log(`   Day ${sprints.current.sprintDay} of ${sprints.current.workingDays}`);\n\nconst periods = {\n  '7days': { start: getDateDaysAgo(7), end: formatDate(today), label: 'Last 7 Days' },\n  '15days': { start: getDateDaysAgo(15), end: formatDate(today), label: 'Last 15 Days' },\n  '30days': { start: getDateDaysAgo(30), end: formatDate(today), label: 'Last 30 Days' }\n};\n\nreturn [{\n  json: {\n    boardComponents: BOARD_COMPONENTS,\n    projectKey: PROJECT_KEY,\n    hoursPerDay: HOURS_PER_DAY,\n    teamMembers,\n    periods,\n    sprints: {\n      current: { ...sprints.current, startDate: formatDate(sprints.current.startDate), endDate: formatDate(sprints.current.endDate) },\n      previous: { ...sprints.previous, startDate: formatDate(sprints.previous.startDate), endDate: formatDate(sprints.previous.endDate) }\n    },\n    today: formatDate(today),\n    timestamp: today.toISOString()\n  }\n}];"
+                "jsCode": "// ========================================\n// CONFIGURATION - MULTI-COMPONENT SUPPORT\n// ========================================\nconst BOARD_COMPONENTS = ['Bot Engine', 'RE Platform 2.0'];\nconst PROJECT_KEY = 'PAI';\nconst HOURS_PER_DAY = 8;\n// ========================================\n\nconst teamMembers = [\n  { name: \"Sreerag Unnikrishnan\", email: \"sreerag.unnikrishnan@paytm.com\", avatar: \"SU\" },\n  { name: \"Dinesh Kumar\", email: \"dinesh34.kumar@paytm.com\", avatar: \"DK\" },\n  { name: \"Huan Zheng\", email: \"huan.zheng@paytm.com\", avatar: \"HZ\" },\n  { name: \"Keshav Sharma\", email: \"keshav4.sharma@paytm.com\", avatar: \"KS\" },\n  { name: \"Kshitiz Gupta\", email: \"kshitiz1.gupta@paytm.com\", avatar: \"KG\" },\n  { name: \"Pankaj Sirohi\", email: \"pankaj.sirohi@paytm.com\", avatar: \"PS\" },\n  { name: \"Rohit Mishra\", email: \"rohit8.mishra@paytmpayments.com\", avatar: \"RM\" },\n  { name: \"Arijit Bhattacharyya\", email: \"Arijit.bhattacharyya@paytm.com\", avatar: \"AB\" },\n  { name: \"Aditya Shahi\", email: \"aditya.shahi@paytm.com\", avatar: \"AS\" },\n  { name: \"Amit Tomar\", email: \"amit2.tomar@paytm.com\", avatar: \"AT\" },\n  { name: \"Arjit Gupta\", email: \"arjit.gupta@paytm.com\", avatar: \"AG\" },\n  { name: \"Britelyne Dass\", email: \"britelyne.dass@paytm.com\", avatar: \"BD\" },\n  { name: \"Eshita Gupta\", email: \"eshita1.gupta@paytm.com\", avatar: \"EG\" },\n  { name: \"Girish Kumar\", email: \"girish3.kumar@paytm.com\", avatar: \"GK\" },\n  { name: \"Pappu Kumar\", email: \"pappu1.kumar@paytm.com\", avatar: \"PK\" },\n  { name: \"Sanyam Jain\", email: \"sanyam1.jain@paytm.com\", avatar: \"SJ\" },\n  { name: \"Deepak Rawat\", email: \"deepak5.rawat@paytm.com\", avatar: \"DR\" },\n  { name: \"Prakarsh Srivastava\", email: \"prakarsh.srivastava@paytm.com\", avatar: \"PS\" },\n  { name: \"Abhishek Keshari\", email: \"abhishek.keshari@paytm.com\", avatar: \"AK\" },\n  { name: \"Anand Yadav\", email: \"anand3.yadav@paytm.com\", avatar: \"AY\" },\n  { name: \"Anshul Chauhan\", email: \"anshul1.chauhan@paytm.com\", avatar: \"AC\" },\n  { name: \"Apurva Ninave\", email: \"apurva.ninave@paytm.com\", avatar: \"AN\" },\n  { name: \"Babaji Komali\", email: \"babaji.komali@paytm.com\", avatar: \"BK\" },\n  { name: \"Deepika Suyal\", email: \"deepika.suyal@paytm.com\", avatar: \"DS\" },\n  { name: \"Tushar Aggarwal\", email: \"tushar1.aggarwal@paytm.com\", avatar: \"TA\" }\n];\n\nconst today = new Date();\nconst formatDate = (d) => d.toISOString().split('T')[0];\nconst getDateDaysAgo = (days) => { const d = new Date(today); d.setDate(d.getDate() - days); return formatDate(d); };\n\n// Sprint calculation\nconst getNthMondayOfMonth = (year, month, n) => {\n  const firstDay = new Date(year, month, 1);\n  const dayOfWeek = firstDay.getDay();\n  const firstMonday = dayOfWeek <= 1 ? 1 + (1 - dayOfWeek) : 1 + (8 - dayOfWeek);\n  return new Date(year, month, firstMonday + (n - 1) * 7);\n};\n\nconst getSprintDates = (ref) => {\n  const year = ref.getFullYear(), month = ref.getMonth();\n  const firstMonday = getNthMondayOfMonth(year, month, 1);\n  const thirdMonday = getNthMondayOfMonth(year, month, 3);\n  const nextMonth = month === 11 ? 0 : month + 1;\n  const nextYear = month === 11 ? year + 1 : year;\n  const nextFirstMonday = getNthMondayOfMonth(nextYear, nextMonth, 1);\n  \n  let current, previous;\n  if (ref >= thirdMonday) {\n    current = { name: 'Sprint 2', number: 2, startDate: thirdMonday, endDate: new Date(nextFirstMonday.getTime() - 1), month: ref.toLocaleString('en-US', { month: 'short' }), year };\n    previous = { name: 'Sprint 1', number: 1, startDate: firstMonday, endDate: new Date(thirdMonday.getTime() - 1), month: ref.toLocaleString('en-US', { month: 'short' }), year };\n  } else if (ref >= firstMonday) {\n    current = { name: 'Sprint 1', number: 1, startDate: firstMonday, endDate: new Date(thirdMonday.getTime() - 1), month: ref.toLocaleString('en-US', { month: 'short' }), year };\n    const pm = month === 0 ? 11 : month - 1, py = month === 0 ? year - 1 : year;\n    previous = { name: 'Sprint 2', number: 2, startDate: getNthMondayOfMonth(py, pm, 3), endDate: new Date(firstMonday.getTime() - 1), month: new Date(py, pm).toLocaleString('en-US', { month: 'short' }), year: py };\n  } else {\n    const pm = month === 0 ? 11 : month - 1, py = month === 0 ? year - 1 : year;\n    current = { name: 'Sprint 2', number: 2, startDate: getNthMondayOfMonth(py, pm, 3), endDate: new Date(firstMonday.getTime() - 1), month: new Date(py, pm).toLocaleString('en-US', { month: 'short' }), year: py };\n    previous = { name: 'Sprint 1', number: 1, startDate: getNthMondayOfMonth(py, pm, 1), endDate: new Date(getNthMondayOfMonth(py, pm, 3).getTime() - 1), month: new Date(py, pm).toLocaleString('en-US', { month: 'short' }), year: py };\n  }\n  \n  const countWorkingDays = (s, e) => { let c = 0; const cur = new Date(s); while (cur <= e) { if (cur.getDay() !== 0 && cur.getDay() !== 6) c++; cur.setDate(cur.getDate() + 1); } return c; };\n  \n  current.workingDays = countWorkingDays(current.startDate, current.endDate);\n  current.totalHours = current.workingDays * HOURS_PER_DAY;\n  const todayEnd = new Date(ref); todayEnd.setHours(23, 59, 59, 999);\n  current.elapsedWorkingDays = countWorkingDays(current.startDate, todayEnd);\n  current.elapsedHours = current.elapsedWorkingDays * HOURS_PER_DAY;\n  current.sprintDay = current.elapsedWorkingDays;\n  current.label = `${current.month} ${current.name}`;\n  current.dateRange = `${formatDate(current.startDate)} to ${formatDate(current.endDate)}`;\n  \n  previous.workingDays = countWorkingDays(previous.startDate, previous.endDate);\n  previous.totalHours = previous.workingDays * HOURS_PER_DAY;\n  previous.elapsedWorkingDays = previous.workingDays;\n  previous.elapsedHours = previous.totalHours;\n  previous.sprintDay = previous.workingDays;\n  previous.label = `${previous.month} ${previous.name}`;\n  previous.dateRange = `${formatDate(previous.startDate)} to ${formatDate(previous.endDate)}`;\n  \n  return { current, previous };\n};\n\nconst sprints = getSprintDates(today);\nconst periods = {\n  '7days': { start: getDateDaysAgo(7), end: formatDate(today), label: 'Last 7 Days' },\n  '15days': { start: getDateDaysAgo(15), end: formatDate(today), label: 'Last 15 Days' },\n  '30days': { start: getDateDaysAgo(30), end: formatDate(today), label: 'Last 30 Days' }\n};\n\nreturn [{ json: { boardComponents: BOARD_COMPONENTS, projectKey: PROJECT_KEY, hoursPerDay: HOURS_PER_DAY, teamMembers, periods, sprints: { current: { ...sprints.current, startDate: formatDate(sprints.current.startDate), endDate: formatDate(sprints.current.endDate) }, previous: { ...sprints.previous, startDate: formatDate(sprints.previous.startDate), endDate: formatDate(sprints.previous.endDate) } }, today: formatDate(today), timestamp: today.toISOString() } }];"
             },
             "id": "config-setup",
             "name": "⚙️ Setup Config",
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
-            "position": [
-                350,
-                500
-            ]
+            "position": [350, 500]
         },
         {
             "parameters": {
@@ -72,10 +55,7 @@
             "name": "📥 JIRA - All Data (30 Days)",
             "type": "n8n-nodes-base.jira",
             "typeVersion": 1,
-            "position": [
-                600,
-                500
-            ],
+            "position": [600, 500],
             "alwaysOutputData": true,
             "credentials": {
                 "jiraSoftwareCloudApi": {
@@ -86,29 +66,23 @@
         },
         {
             "parameters": {
-                "jsCode": "// Process JIRA data and aggregate per team member\n// SUPPORTS MULTIPLE COMPONENTS DYNAMICALLY\n\nconst configData = $('⚙️ Setup Config').first().json;\nconst teamMembers = configData.teamMembers;\nconst BOARD_COMPONENTS = configData.boardComponents; // Array of components\nconst PROJECT_KEY = configData.projectKey;\nconst sprints = configData.sprints;\n\nconst rawIssues = $('📥 JIRA - All Data (30 Days)').all().map(i => i.json);\nconsole.log(`📊 Total issues fetched: ${rawIssues.length}`);\n\n// Filter by ANY of the configured components\nconst allIssues = rawIssues.filter(issue => {\n  const components = issue.fields?.components || [];\n  return components.some(comp => BOARD_COMPONENTS.includes(comp.name));\n});\nconsole.log(`📊 Issues with components [${BOARD_COMPONENTS.join(', ')}]: ${allIssues.length}`);\n\n// Date cutoffs for periods\nconst now = new Date();\nconst cutoff7d = new Date(now); cutoff7d.setDate(now.getDate() - 7);\nconst cutoff15d = new Date(now); cutoff15d.setDate(now.getDate() - 15);\nconst cutoff30d = new Date(now); cutoff30d.setDate(now.getDate() - 30);\n\n// Sprint date parsing\nconst currentSprintStart = new Date(sprints.current.startDate);\nconst currentSprintEnd = new Date(sprints.current.endDate);\ncurrentSprintEnd.setHours(23, 59, 59, 999);\nconst previousSprintStart = new Date(sprints.previous.startDate);\nconst previousSprintEnd = new Date(sprints.previous.endDate);\npreviousSprintEnd.setHours(23, 59, 59, 999);\n\nconst filterByPeriod = (issues, cutoffDate) => {\n  return issues.filter(issue => new Date(issue.fields?.updated || issue.fields?.created) >= cutoffDate);\n};\n\nconst filterBySprint = (issues, startDate, endDate) => {\n  return issues.filter(issue => {\n    const createdDate = new Date(issue.fields?.created);\n    return createdDate >= startDate && createdDate <= endDate;\n  });\n};\n\nconst issues7d = filterByPeriod(allIssues, cutoff7d);\nconst issues15d = filterByPeriod(allIssues, cutoff15d);\nconst issues30d = allIssues;\nconst issuesCurrentSprint = filterBySprint(allIssues, currentSprintStart, currentSprintEnd);\nconst issuesPreviousSprint = filterBySprint(allIssues, previousSprintStart, previousSprintEnd);\n\nconsole.log(`🏃 Current Sprint issues: ${issuesCurrentSprint.length}`);\nconsole.log(`🏃 Previous Sprint issues: ${issuesPreviousSprint.length}`);\n\n// Board info - DYNAMIC based on components\nconst boardInfo = {\n  name: BOARD_COMPONENTS.join(' & '), // e.g., \"Bot Engine & RE Platform 2.0\"\n  project: PROJECT_KEY,\n  components: BOARD_COMPONENTS\n};\n\n// Status mapping\nconst statusMapping = {\n  'To Do': 'toDo', 'TO DO': 'toDo', 'Open': 'toDo', 'Backlog': 'toDo', 'New': 'toDo',\n  'In Progress': 'inProgress', 'IN PROGRESS': 'inProgress', 'In Review': 'inProgress',\n  'Code Review': 'inProgress', 'In Development': 'inProgress', 'Development': 'inProgress',\n  'UAT': 'uat', 'QA': 'uat', 'Testing': 'uat', 'Ready for UAT': 'uat',\n  'Done': 'done', 'DONE': 'done', 'Closed': 'done', 'Resolved': 'done', 'Complete': 'done', 'Completed': 'done'\n};\nconst getNormalizedStatus = (status) => statusMapping[status] || 'toDo';\n\n// Helper: Check if member matches assignee\nconst isMemberAssignee = (issue, memberEmail) => {\n  const assignee = issue.fields?.assignee;\n  if (!assignee) return false;\n  const emailLower = memberEmail.toLowerCase();\n  const emailPrefix = emailLower.split('@')[0];\n  const assigneeEmail = (assignee.emailAddress || '').toLowerCase();\n  if (assigneeEmail === emailLower || assigneeEmail.includes(emailPrefix)) return true;\n  const displayName = (assignee.displayName || '').toLowerCase();\n  const nameParts = emailPrefix.replace(/[0-9]/g, '').replace(/\\./g, ' ').split(' ').filter(p => p.length > 2);\n  if (nameParts.length > 0 && nameParts.every(part => displayName.includes(part))) return true;\n  return false;\n};\n\n// Get member's issues with time data\nconst getMemberIssuesWithTime = (issues, memberEmail) => {\n  return issues.filter(issue => isMemberAssignee(issue, memberEmail)).map(issue => {\n    const timeSpentSeconds = issue.fields?.timespent || 0;\n    const timeSpentHours = timeSpentSeconds / 3600;\n    return {\n      key: issue.key,\n      summary: issue.fields?.summary || '',\n      status: getNormalizedStatus(issue.fields?.status?.name || 'To Do'),\n      statusName: issue.fields?.status?.name || 'To Do',\n      timeSpentSeconds,\n      timeSpentHours: Math.round(timeSpentHours * 10) / 10,\n      priority: issue.fields?.priority?.name || 'Medium',\n      created: issue.fields?.created\n    };\n  });\n};\n\n// Calculate metrics for a member\nconst getMemberMetrics = (issues, memberEmail) => {\n  const memberIssues = getMemberIssuesWithTime(issues, memberEmail);\n  const counts = { total: memberIssues.length, done: 0, inProgress: 0, uat: 0, toDo: 0 };\n  let totalHoursLogged = 0;\n  \n  memberIssues.forEach(issue => {\n    counts[issue.status]++;\n    totalHoursLogged += issue.timeSpentHours;\n  });\n  \n  const topIssues = memberIssues\n    .filter(i => i.timeSpentHours > 0)\n    .sort((a, b) => b.timeSpentHours - a.timeSpentHours)\n    .slice(0, 4)\n    .map(i => ({ key: i.key, summary: i.summary, status: i.status, statusName: i.statusName, hours: i.timeSpentHours }));\n  \n  return { ...counts, hoursLogged: Math.round(totalHoursLogged * 10) / 10, topIssues };\n};\n\n// Calculate SPRINT metrics for a member\nconst getMemberSprintMetrics = (issues, memberEmail, sprintInfo) => {\n  const memberIssues = getMemberIssuesWithTime(issues, memberEmail);\n  const counts = { total: memberIssues.length, done: 0, inProgress: 0, uat: 0, toDo: 0 };\n  let totalHoursLogged = 0;\n  \n  memberIssues.forEach(issue => {\n    counts[issue.status]++;\n    totalHoursLogged += issue.timeSpentHours;\n  });\n  \n  const topIssues = memberIssues\n    .filter(i => i.timeSpentHours > 0)\n    .sort((a, b) => b.timeSpentHours - a.timeSpentHours)\n    .slice(0, 4)\n    .map(i => ({ key: i.key, summary: i.summary, status: i.status, statusName: i.statusName, hours: i.timeSpentHours }));\n  \n  const allSprintIssues = memberIssues.map(i => ({\n    key: i.key, summary: i.summary, status: i.status, statusName: i.statusName, hours: i.timeSpentHours\n  }));\n  \n  return {\n    ...counts,\n    hoursLogged: Math.round(totalHoursLogged * 10) / 10,\n    totalHours: sprintInfo.totalHours,\n    workingDays: sprintInfo.workingDays,\n    topIssues,\n    allIssues: allSprintIssues\n  };\n};\n\n// Calculate team summary\nconst calculateTeamSummary = (issues) => {\n  const summary = { total: issues.length, done: 0, inProgress: 0, uat: 0, toDo: 0, totalHoursLogged: 0 };\n  issues.forEach(issue => {\n    summary[getNormalizedStatus(issue.fields?.status?.name || 'To Do')]++;\n    summary.totalHoursLogged += (issue.fields?.timespent || 0) / 3600;\n  });\n  summary.totalHoursLogged = Math.round(summary.totalHoursLogged * 10) / 10;\n  return summary;\n};\n\nconst workingHours = { '7days': 40, '15days': 88, '30days': 176 };\n\nconst outputData = {\n  lastUpdated: new Date().toISOString(),\n  generatedAt: configData.timestamp,\n  boardInfo,\n  workingHours,\n  sprints: configData.sprints,\n  periods: {\n    '7days': { label: 'Last 7 Days', startDate: configData.periods['7days'].start, endDate: configData.periods['7days'].end },\n    '15days': { label: 'Last 15 Days', startDate: configData.periods['15days'].start, endDate: configData.periods['15days'].end },\n    '30days': { label: 'Last 30 Days', startDate: configData.periods['30days'].start, endDate: configData.periods['30days'].end }\n  },\n  teamSummary: {\n    '7days': calculateTeamSummary(issues7d),\n    '15days': calculateTeamSummary(issues15d),\n    '30days': calculateTeamSummary(issues30d),\n    'currentSprint': calculateTeamSummary(issuesCurrentSprint),\n    'previousSprint': calculateTeamSummary(issuesPreviousSprint)\n  },\n  members: teamMembers.map(member => ({\n    name: member.name,\n    email: member.email,\n    avatar: member.avatar,\n    metrics: {\n      '7days': getMemberMetrics(issues7d, member.email),\n      '15days': getMemberMetrics(issues15d, member.email),\n      '30days': getMemberMetrics(issues30d, member.email)\n    },\n    sprintMetrics: {\n      current: getMemberSprintMetrics(issuesCurrentSprint, member.email, sprints.current),\n      previous: getMemberSprintMetrics(issuesPreviousSprint, member.email, sprints.previous)\n    }\n  }))\n};\n\nconsole.log('✅ Processing complete!');\nconsole.log(`📋 Boards: ${outputData.boardInfo.name}`);\nconsole.log(`👥 Members: ${outputData.members.length}`);\nconsole.log(`📊 Total 7d tasks: ${outputData.teamSummary['7days'].total}`);\n\nreturn [{ json: outputData }];"
+                "jsCode": "// Process JIRA data - INCLUDES ESTIMATED HOURS\nconst configData = $('⚙️ Setup Config').first().json;\nconst { teamMembers, boardComponents, projectKey, sprints } = configData;\n\nconst rawIssues = $('📥 JIRA - All Data (30 Days)').all().map(i => i.json);\nconsole.log(`📊 Total issues: ${rawIssues.length}`);\n\nconst allIssues = rawIssues.filter(issue => {\n  const comps = issue.fields?.components || [];\n  return comps.some(c => boardComponents.includes(c.name));\n});\nconsole.log(`📊 Filtered issues: ${allIssues.length}`);\n\nconst now = new Date();\nconst cutoff7d = new Date(now); cutoff7d.setDate(now.getDate() - 7);\nconst cutoff15d = new Date(now); cutoff15d.setDate(now.getDate() - 15);\n\nconst currentSprintStart = new Date(sprints.current.startDate);\nconst currentSprintEnd = new Date(sprints.current.endDate); currentSprintEnd.setHours(23,59,59,999);\nconst prevSprintStart = new Date(sprints.previous.startDate);\nconst prevSprintEnd = new Date(sprints.previous.endDate); prevSprintEnd.setHours(23,59,59,999);\n\nconst filterByPeriod = (issues, cutoff) => issues.filter(i => new Date(i.fields?.updated || i.fields?.created) >= cutoff);\nconst filterBySprint = (issues, start, end) => issues.filter(i => { const d = new Date(i.fields?.created); return d >= start && d <= end; });\n\nconst issues7d = filterByPeriod(allIssues, cutoff7d);\nconst issues15d = filterByPeriod(allIssues, cutoff15d);\nconst issues30d = allIssues;\nconst issuesCurrent = filterBySprint(allIssues, currentSprintStart, currentSprintEnd);\nconst issuesPrev = filterBySprint(allIssues, prevSprintStart, prevSprintEnd);\n\nconst boardInfo = { name: boardComponents.join(' & '), project: projectKey, components: boardComponents };\n\nconst statusMap = {\n  'To Do': 'toDo', 'TO DO': 'toDo', 'Open': 'toDo', 'Backlog': 'toDo', 'New': 'toDo',\n  'In Progress': 'inProgress', 'IN PROGRESS': 'inProgress', 'In Review': 'inProgress', 'Code Review': 'inProgress', 'In Development': 'inProgress',\n  'UAT': 'uat', 'QA': 'uat', 'Testing': 'uat', 'Ready for UAT': 'uat',\n  'Done': 'done', 'DONE': 'done', 'Closed': 'done', 'Resolved': 'done', 'Complete': 'done', 'Completed': 'done'\n};\nconst getStatus = (s) => statusMap[s] || 'toDo';\n\nconst isAssignee = (issue, email) => {\n  const a = issue.fields?.assignee;\n  if (!a) return false;\n  const el = email.toLowerCase(), ep = el.split('@')[0];\n  const ae = (a.emailAddress || '').toLowerCase();\n  if (ae === el || ae.includes(ep)) return true;\n  const dn = (a.displayName || '').toLowerCase();\n  const parts = ep.replace(/[0-9]/g, '').replace(/\\./g, ' ').split(' ').filter(p => p.length > 2);\n  return parts.length > 0 && parts.every(p => dn.includes(p));\n};\n\n// Get issues with ESTIMATED + LOGGED hours\nconst getIssuesWithTime = (issues, email) => issues.filter(i => isAssignee(i, email)).map(i => {\n  const spent = (i.fields?.timespent || 0) / 3600;\n  const estimated = (i.fields?.timeoriginalestimate || 0) / 3600;\n  return {\n    key: i.key, summary: i.fields?.summary || '',\n    status: getStatus(i.fields?.status?.name || 'To Do'),\n    statusName: i.fields?.status?.name || 'To Do',\n    timeSpentHours: Math.round(spent * 10) / 10,\n    estimatedHours: Math.round(estimated * 10) / 10,\n    priority: i.fields?.priority?.name || 'Medium',\n    created: i.fields?.created\n  };\n});\n\n// Calculate metrics with ESTIMATED HOURS\nconst getMetrics = (issues, email) => {\n  const memberIssues = getIssuesWithTime(issues, email);\n  const counts = { total: memberIssues.length, done: 0, inProgress: 0, uat: 0, toDo: 0 };\n  let logged = 0, estimated = 0;\n  memberIssues.forEach(i => { counts[i.status]++; logged += i.timeSpentHours; estimated += i.estimatedHours; });\n  const topIssues = memberIssues.filter(i => i.timeSpentHours > 0).sort((a,b) => b.timeSpentHours - a.timeSpentHours).slice(0,4)\n    .map(i => ({ key: i.key, summary: i.summary, status: i.status, statusName: i.statusName, hours: i.timeSpentHours, estimated: i.estimatedHours }));\n  return { ...counts, hoursLogged: Math.round(logged * 10) / 10, estimatedHours: Math.round(estimated * 10) / 10, topIssues };\n};\n\nconst getSprintMetrics = (issues, email, sprintInfo) => {\n  const memberIssues = getIssuesWithTime(issues, email);\n  const counts = { total: memberIssues.length, done: 0, inProgress: 0, uat: 0, toDo: 0 };\n  let logged = 0, estimated = 0;\n  memberIssues.forEach(i => { counts[i.status]++; logged += i.timeSpentHours; estimated += i.estimatedHours; });\n  const topIssues = memberIssues.filter(i => i.timeSpentHours > 0).sort((a,b) => b.timeSpentHours - a.timeSpentHours).slice(0,4)\n    .map(i => ({ key: i.key, summary: i.summary, status: i.status, statusName: i.statusName, hours: i.timeSpentHours, estimated: i.estimatedHours }));\n  const allIssues = memberIssues.map(i => ({ key: i.key, summary: i.summary, status: i.status, statusName: i.statusName, hours: i.timeSpentHours, estimated: i.estimatedHours }));\n  return { ...counts, hoursLogged: Math.round(logged * 10) / 10, estimatedHours: Math.round(estimated * 10) / 10, totalHours: sprintInfo.totalHours, workingDays: sprintInfo.workingDays, topIssues, allIssues };\n};\n\nconst teamSummary = (issues) => {\n  const s = { total: issues.length, done: 0, inProgress: 0, uat: 0, toDo: 0, totalHoursLogged: 0, totalEstimatedHours: 0 };\n  issues.forEach(i => { s[getStatus(i.fields?.status?.name || 'To Do')]++; s.totalHoursLogged += (i.fields?.timespent || 0) / 3600; s.totalEstimatedHours += (i.fields?.timeoriginalestimate || 0) / 3600; });\n  s.totalHoursLogged = Math.round(s.totalHoursLogged * 10) / 10;\n  s.totalEstimatedHours = Math.round(s.totalEstimatedHours * 10) / 10;\n  return s;\n};\n\nconst output = {\n  lastUpdated: new Date().toISOString(),\n  generatedAt: configData.timestamp,\n  boardInfo,\n  workingHours: { '7days': 40, '15days': 88, '30days': 176 },\n  sprints: configData.sprints,\n  periods: {\n    '7days': { label: 'Last 7 Days', startDate: configData.periods['7days'].start, endDate: configData.periods['7days'].end },\n    '15days': { label: 'Last 15 Days', startDate: configData.periods['15days'].start, endDate: configData.periods['15days'].end },\n    '30days': { label: 'Last 30 Days', startDate: configData.periods['30days'].start, endDate: configData.periods['30days'].end }\n  },\n  teamSummary: {\n    '7days': teamSummary(issues7d), '15days': teamSummary(issues15d), '30days': teamSummary(issues30d),\n    'currentSprint': teamSummary(issuesCurrent), 'previousSprint': teamSummary(issuesPrev)\n  },\n  members: teamMembers.map(m => ({\n    name: m.name, email: m.email, avatar: m.avatar,\n    metrics: { '7days': getMetrics(issues7d, m.email), '15days': getMetrics(issues15d, m.email), '30days': getMetrics(issues30d, m.email) },\n    sprintMetrics: { current: getSprintMetrics(issuesCurrent, m.email, sprints.current), previous: getSprintMetrics(issuesPrev, m.email, sprints.previous) }\n  }))\n};\n\nconsole.log(`✅ Done! Members: ${output.members.length}`);\nreturn [{ json: output }];"
             },
             "id": "process-data",
             "name": "📊 Process & Aggregate",
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
-            "position": [
-                850,
-                500
-            ]
+            "position": [850, 500]
         },
         {
             "parameters": {
-                "jsCode": "// Format JSON for output\nconst data = $input.first().json;\n\nconsole.log('=== Performance Dashboard Data Generated ===');\nconsole.log(`Last Updated: ${data.lastUpdated}`);\nconsole.log(`Boards: ${data.boardInfo.name}`);\nconsole.log(`Team Members: ${data.members.length}`);\nconsole.log('');\nconsole.log('Team Summary (7 days):');\nconsole.log(`  Total: ${data.teamSummary['7days'].total}`);\nconsole.log(`  Done: ${data.teamSummary['7days'].done}`);\nconsole.log(`  In Progress: ${data.teamSummary['7days'].inProgress}`);\nconsole.log(`  UAT: ${data.teamSummary['7days'].uat}`);\nconsole.log(`  To Do: ${data.teamSummary['7days'].toDo}`);\n\nreturn [{\n  json: {\n    performanceData: data,\n    jsonString: JSON.stringify(data, null, 2)\n  }\n}];"
+                "jsCode": "const data = $input.first().json;\nconsole.log('=== Performance Dashboard ===');\nconsole.log(`Boards: ${data.boardInfo.name}`);\nconsole.log(`Members: ${data.members.length}`);\nconsole.log(`7d Total: ${data.teamSummary['7days'].total}`);\nreturn [{ json: { performanceData: data, jsonString: JSON.stringify(data, null, 2) } }];"
             },
             "id": "format-output",
             "name": "📝 Format Output",
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
-            "position": [
-                1100,
-                500
-            ]
+            "position": [1100, 500]
         },
         {
             "parameters": {
@@ -117,148 +91,56 @@
                 "sendHeaders": true,
                 "headerParameters": {
                     "parameters": [
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
-                        },
-                        {
-                            "name": "X-Master-Key",
-                            "value": "$2a$10$XfkJ1nMj.ioZl6ieqlwNYu.s0DV9LLit5hf6qjj3lFC0Vsz0wSsye"
-                        }
+                        { "name": "Content-Type", "value": "application/json" },
+                        { "name": "X-Master-Key", "value": "$2a$10$XfkJ1nMj.ioZl6ieqlwNYu.s0DV9LLit5hf6qjj3lFC0Vsz0wSsye" }
                     ]
                 },
                 "sendBody": true,
                 "specifyBody": "json",
                 "jsonBody": "={{ JSON.stringify($json.performanceData) }}",
-                "options": {
-                    "timeout": 30000
-                }
+                "options": { "timeout": 30000 }
             },
             "id": "webhook-output",
             "name": "🌐 Save to JSONBin",
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.2,
-            "position": [
-                1350,
-                400
-            ],
-            "disabled": false,
-            "notes": "Saves data to JSONBin.io cloud storage"
+            "position": [1350, 400],
+            "disabled": false
         },
         {
             "parameters": {
-                "jsCode": "// Success log\nconst data = $input.first().json;\nconsole.log('✅ Performance Dashboard data generated successfully!');\nconsole.log(`📅 Generated at: ${new Date().toISOString()}`);\nconsole.log(`👥 Team Members: ${data.performanceData?.members?.length || 0}`);\nreturn [{ json: { status: 'success', message: 'Dashboard data generated', timestamp: new Date().toISOString() } }];"
+                "jsCode": "console.log('✅ Dashboard data saved!');\nreturn [{ json: { status: 'success', timestamp: new Date().toISOString() } }];"
             },
             "id": "success-log",
             "name": "✅ Success",
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
-            "position": [
-                1600,
-                500
-            ]
+            "position": [1600, 500]
         },
         {
             "parameters": {
-                "content": "## 🔧 Configuration\n\n### Board Components (DYNAMIC)\nEdit `BOARD_COMPONENTS` array in Setup Config:\n```\nconst BOARD_COMPONENTS = ['Bot Engine', 'RE Platform 2.0'];\n```\n\n### JQL Filter\nUpdate JIRA node JQL to match:\n```\ncomponent IN (\"Bot Engine\", \"RE Platform 2.0\")\n```\n\n### JSONBin.io ✅\n- Bin ID: 693bb6c643b1c97be9e88bb7\n- API Key: Configured"
+                "content": "## 🔧 Configuration\n\n### Board Components\n```\nconst BOARD_COMPONENTS = ['Bot Engine', 'RE Platform 2.0'];\n```\n\n### JIRA Fields Used\n- `timespent` - Hours logged\n- `timeoriginalestimate` - Estimated hours\n\n### JSONBin.io\n- Bin ID: 693bb6c643b1c97be9e88bb7"
             },
             "id": "config-note",
             "name": "🔧 Config Notes",
             "type": "n8n-nodes-base.stickyNote",
             "typeVersion": 1,
-            "position": [
-                100,
-                800
-            ]
+            "position": [100, 800]
         }
     ],
     "connections": {
-        "Daily 9:30 PM IST": {
-            "main": [
-                [
-                    {
-                        "node": "⚙️ Setup Config",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Manual Trigger": {
-            "main": [
-                [
-                    {
-                        "node": "⚙️ Setup Config",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "⚙️ Setup Config": {
-            "main": [
-                [
-                    {
-                        "node": "📥 JIRA - All Data (30 Days)",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "📥 JIRA - All Data (30 Days)": {
-            "main": [
-                [
-                    {
-                        "node": "📊 Process & Aggregate",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "📊 Process & Aggregate": {
-            "main": [
-                [
-                    {
-                        "node": "📝 Format Output",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "📝 Format Output": {
-            "main": [
-                [
-                    {
-                        "node": "🌐 Save to JSONBin",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "🌐 Save to JSONBin": {
-            "main": [
-                [
-                    {
-                        "node": "✅ Success",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        }
+        "Daily 9:30 PM IST": { "main": [[{ "node": "⚙️ Setup Config", "type": "main", "index": 0 }]] },
+        "Manual Trigger": { "main": [[{ "node": "⚙️ Setup Config", "type": "main", "index": 0 }]] },
+        "⚙️ Setup Config": { "main": [[{ "node": "📥 JIRA - All Data (30 Days)", "type": "main", "index": 0 }]] },
+        "📥 JIRA - All Data (30 Days)": { "main": [[{ "node": "📊 Process & Aggregate", "type": "main", "index": 0 }]] },
+        "📊 Process & Aggregate": { "main": [[{ "node": "📝 Format Output", "type": "main", "index": 0 }]] },
+        "📝 Format Output": { "main": [[{ "node": "🌐 Save to JSONBin", "type": "main", "index": 0 }]] },
+        "🌐 Save to JSONBin": { "main": [[{ "node": "✅ Success", "type": "main", "index": 0 }]] }
     },
     "active": false,
-    "settings": {
-        "executionOrder": "v1"
-    },
-    "versionId": "multi-component-v2",
+    "settings": { "executionOrder": "v1" },
+    "versionId": "v3-estimated-hours",
     "id": "performance-dashboard-workflow",
-    "meta": {
-        "instanceId": "performance-bot"
-    },
+    "meta": { "instanceId": "performance-bot" },
     "tags": []
 }
