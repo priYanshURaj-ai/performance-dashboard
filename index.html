@@ -31,6 +31,10 @@
                 </div>
             </div>
             <div class="header-right">
+                <button class="refresh-btn" id="refreshBtn" title="Refresh Dashboard">
+                    <span class="refresh-icon">🔄</span>
+                    <span class="refresh-text">Refresh</span>
+                </button>
                 <div class="last-updated">
                     <span class="update-label">Last Updated</span>
                     <span class="update-time" id="lastUpdated">Loading...</span>
@@ -205,6 +209,16 @@
                     <h3>📈 Top Performers</h3>
                     <div class="chart-container">
                         <canvas id="topPerformersChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Daily Activity Trends -->
+            <div class="activity-trends-section">
+                <div class="chart-card full-width">
+                    <h3>📉 Daily Activity Trends</h3>
+                    <div class="chart-container-wide">
+                        <canvas id="activityTrendsChart"></canvas>
                     </div>
                 </div>
             </div>
