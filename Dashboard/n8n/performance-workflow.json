@@ -3,7 +3,7 @@
     "nodes": [
         {
             "parameters": {
-                "content": "## 📊 Performance Dashboard Workflow v2.0\n\n### Key Updates\n- **Multi-Board Support**: Dynamic board selection\n- **6 hrs/day bandwidth**: 30 hrs/week\n- **Task-based Available Bandwidth**: % of open tasks\n- **Subtask Worklog Tracking**: Tracks all contributors\n- **Sprint-based Estimated vs Logged Hours**\n\n### Flow\n```\nDaily 9:30 PM IST\n    ↓\nFetch JIRA Issues (all including subtasks)\n    ↓\nProcess & Calculate Metrics\n    ↓\nSave to JSONBin\n```\n\n### Bandwidth Logic\n- **Highest Utilization**: Hours logged / Expected hours\n- **Most Available**: Open tasks % (tasks remaining)\n- **Individual**: Est hours (Done) vs Logged hours"
+                "content": "## 📊 Performance Dashboard Workflow v2.0\n\n### Key Updates\n- **Multi-Board Support**: Dynamic board selection\n- **6 hrs/day bandwidth**: 30 hrs/week\n- **Task-based Available Bandwidth**: % tasks completed\n- **Subtask Worklog Tracking**: Tracks all contributors\n- **GitHub Gist Storage**: Unlimited size, free!\n\n### Flow\n```\nDaily 9:30 PM IST\n    ↓\nFetch JIRA Issues (all including subtasks)\n    ↓\nProcess & Calculate Metrics\n    ↓\nSave to GitHub Gist\n```\n\n### Bandwidth Logic\n- **Highest Utilization**: Hours logged / Expected hours\n- **Most Available**: % tasks COMPLETED (done/total)\n- **Individual**: Est hours (Done) vs Logged hours"
             },
             "id": "workflow-doc",
             "name": "📋 Documentation v2",
@@ -87,22 +87,23 @@
         },
         {
             "parameters": {
-                "method": "PUT",
-                "url": "https://api.jsonbin.io/v3/b/6978ef9dae596e708ffaf895",
+                "method": "PATCH",
+                "url": "https://api.github.com/gists/c51929b485b22c47daf74474026fd444",
                 "sendHeaders": true,
                 "headerParameters": {
                     "parameters": [
-                        { "name": "Content-Type", "value": "application/json" },
-                        { "name": "X-Master-Key", "value": "$2a$10$XfkJ1nMj.ioZl6ieqlwNYu.s0DV9LLit5hf6qjj3lFC0Vsz0wSsye" }
+                        { "name": "Authorization", "value": "Bearer YOUR_GITHUB_TOKEN_HERE" },
+                        { "name": "Accept", "value": "application/vnd.github+json" },
+                        { "name": "Content-Type", "value": "application/json" }
                     ]
                 },
                 "sendBody": true,
                 "specifyBody": "json",
-                "jsonBody": "={{ JSON.stringify($json.performanceData) }}",
-                "options": { "timeout": 30000 }
+                "jsonBody": "={{ { \"files\": { \"performance-data.json\": { \"content\": JSON.stringify($json.performanceData) } } } }}",
+                "options": { "timeout": 60000 }
             },
             "id": "webhook-output",
-            "name": "🌐 Save to JSONBin",
+            "name": "🌐 Save to GitHub Gist",
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.2,
             "position": [1400, 500],
@@ -135,8 +136,8 @@
         "⚙️ Setup Config v2": { "main": [[{ "node": "📥 JIRA - All Issues", "type": "main", "index": 0 }]] },
         "📥 JIRA - All Issues": { "main": [[{ "node": "📊 Process Enhanced v2", "type": "main", "index": 0 }]] },
         "📊 Process Enhanced v2": { "main": [[{ "node": "📝 Format Output", "type": "main", "index": 0 }]] },
-        "📝 Format Output": { "main": [[{ "node": "🌐 Save to JSONBin", "type": "main", "index": 0 }]] },
-        "🌐 Save to JSONBin": { "main": [[{ "node": "✅ Success", "type": "main", "index": 0 }]] }
+        "📝 Format Output": { "main": [[{ "node": "🌐 Save to GitHub Gist", "type": "main", "index": 0 }]] },
+        "🌐 Save to GitHub Gist": { "main": [[{ "node": "✅ Success", "type": "main", "index": 0 }]] }
     },
     "active": false,
     "settings": { "executionOrder": "v1" },

@@ -82,10 +82,12 @@ let selectedMember = null;
 let currentSprintView = 'current'; // 'current' or 'previous'
 
 // ========================================
-// JSONBin.io Configuration
+// GitHub Gist Configuration
 // ========================================
-const JSONBIN_BIN_ID = '6978ef9dae596e708ffaf895';
-const JSONBIN_API_KEY = '$2a$10$XfkJ1nMj.ioZl6ieqlwNYu.s0DV9LLit5hf6qjj3lFC0Vsz0wSsye';
+const GIST_USERNAME = 'priYanshURaj-ai';
+const GIST_ID = 'c51929b485b22c47daf74474026fd444';
+const GIST_FILENAME = 'performance-data.json';
+const GIST_RAW_URL = `https://gist.githubusercontent.com/${GIST_USERNAME}/${GIST_ID}/raw/${GIST_FILENAME}`;
 // ========================================
 
 // NEW: Working hours config (6 hrs/day)
@@ -110,33 +112,25 @@ async function initDashboard() {
     }
 }
 
-// Load data from JSONBin.io
+// Load data from GitHub Gist
 async function loadData() {
     try {
-        if (JSONBIN_BIN_ID !== 'YOUR_BIN_ID_HERE') {
-            const response = await fetch(
-                `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`,
-                {
-                    headers: {
-                        'X-Master-Key': JSONBIN_API_KEY
-                    }
-                }
-            );
-            
-            if (response.ok) {
-                const result = await response.json();
-                dashboardData = result.record;
-                console.log('✅ Data loaded from JSONBin:', new Date(dashboardData.lastUpdated).toLocaleString());
-                console.log(`   👥 Members: ${dashboardData.members?.length || 0}`);
-                console.log(`   📊 Version: ${dashboardData.version || '1.0'}`);
-                return;
-            }
+        // Add cache-busting parameter to get fresh data
+        const cacheBuster = `?t=${Date.now()}`;
+        const response = await fetch(GIST_RAW_URL + cacheBuster);
+        
+        if (response.ok) {
+            dashboardData = await response.json();
+            console.log('✅ Data loaded from GitHub Gist:', new Date(dashboardData.lastUpdated).toLocaleString());
+            console.log(`   👥 Members: ${dashboardData.members?.length || 0}`);
+            console.log(`   📊 Version: ${dashboardData.version || '1.0'}`);
+            return;
         }
         
         // Fallback to local file
-        const response = await fetch('data/performance-data.json');
-        if (!response.ok) throw new Error('Failed to fetch data');
-        dashboardData = await response.json();
+        const localResponse = await fetch('data/performance-data.json');
+        if (!localResponse.ok) throw new Error('Failed to fetch data');
+        dashboardData = await localResponse.json();
         console.log('✅ Data loaded from local file');
     } catch (error) {
         console.error('Error loading data:', error);
