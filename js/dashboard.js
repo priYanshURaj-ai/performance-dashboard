@@ -496,7 +496,7 @@ function renderBandwidthOverview() {
         elements.highUtilizationList.innerHTML = '<div class="no-bandwidth-data">No hours logged yet</div>';
     } else {
         elements.highUtilizationList.innerHTML = highUtilization.map((member, index) => `
-            <div class="bandwidth-member" onclick="openMemberModal(${member.memberIndex})">
+            <div class="bandwidth-member" onclick="openMemberModal('${member.email}')">
                 <div class="bandwidth-rank rank-${index + 1}">${index + 1}</div>
                 <div class="bandwidth-member-avatar">${member.avatar}</div>
                 <div class="bandwidth-member-info">
@@ -519,7 +519,7 @@ function renderBandwidthOverview() {
         elements.lowUtilizationList.innerHTML = '<div class="no-bandwidth-data">No tasks assigned</div>';
     } else {
         elements.lowUtilizationList.innerHTML = lowUtilization.map((member, index) => `
-            <div class="bandwidth-member" onclick="openMemberModal(${member.memberIndex})">
+            <div class="bandwidth-member" onclick="openMemberModal('${member.email}')">
                 <div class="bandwidth-rank rank-${index + 1}">${index + 1}</div>
                 <div class="bandwidth-member-avatar">${member.avatar}</div>
                 <div class="bandwidth-member-info">
@@ -1014,10 +1014,22 @@ function getSampleData() {
 // MEMBER MODAL FUNCTIONS
 // ============================================
 
-// Open member modal
-function openMemberModal(memberIndex) {
-    const member = dashboardData.members[memberIndex];
-    if (!member) return;
+// Open member modal - now accepts email OR index for compatibility
+function openMemberModal(identifier) {
+    let member;
+    
+    if (typeof identifier === 'string') {
+        // If identifier is an email string, find by email
+        member = dashboardData.members.find(m => m.email === identifier);
+    } else {
+        // If identifier is a number (index), use index lookup
+        member = dashboardData.members[identifier];
+    }
+    
+    if (!member) {
+        console.warn('Member not found:', identifier);
+        return;
+    }
     
     selectedMember = member;
     populateModal(member);
