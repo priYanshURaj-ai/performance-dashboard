@@ -144,7 +144,12 @@ function initializeBoardSelector() {
     if (!elements.boardSelector) return;
     
     const boards = dashboardData?.availableBoards || [];
-    currentBoardId = dashboardData?.selectedBoardId || dashboardData?.defaultBoardId || 'combined';
+    
+    // Only reset currentBoardId if it's not set or doesn't exist in available boards
+    const boardExists = boards.some(b => b.id === currentBoardId);
+    if (!currentBoardId || !boardExists) {
+        currentBoardId = dashboardData?.selectedBoardId || dashboardData?.defaultBoardId || boards[0]?.id || 'combined';
+    }
     
     // Clear existing options
     elements.boardSelector.innerHTML = '';
@@ -167,6 +172,9 @@ function initializeBoardSelector() {
         option.textContent = dashboardData?.boardInfo?.name || 'Team Dashboard';
         elements.boardSelector.appendChild(option);
     }
+    
+    // Ensure the selector reflects the current board
+    elements.boardSelector.value = currentBoardId;
 }
 
 // NEW: Switch board and update dashboard
@@ -177,25 +185,20 @@ function switchBoard(boardId) {
     }
     
     currentBoardId = boardId;
-    const boardData = dashboardData.boardsData[boardId];
     
-    // Update current view data
-    dashboardData.boardInfo = {
-        id: boardId,
-        name: boardData.boardName,
-        project: boardData.project,
-        components: boardData.components
-    };
-    dashboardData.teamSummary = boardData.teamSummary;
-    dashboardData.members = boardData.members;
+    // Update selector UI
+    if (elements.boardSelector) {
+        elements.boardSelector.value = boardId;
+    }
     
-    console.log(`🔄 Switched to board: ${boardData.boardName}`);
+    const boardName = dashboardData.boardsData[boardId].boardName;
+    console.log(`🔄 Switched to board: ${boardName}`);
     
-    // Re-render dashboard
+    // Re-render dashboard (ensureCurrentBoardData will load the board's data)
     renderDashboard();
     
     // Show notification
-    showBoardSwitchNotification(boardData.boardName);
+    showBoardSwitchNotification(boardName);
 }
 
 // Show board switch notification
@@ -368,8 +371,31 @@ function setupEventListeners() {
     });
 }
 
+// Ensure current board data is loaded at top level
+function ensureCurrentBoardData() {
+    if (!currentBoardId || !dashboardData?.boardsData?.[currentBoardId]) return;
+    
+    const boardData = dashboardData.boardsData[currentBoardId];
+    
+    // Update top-level data with selected board's data
+    dashboardData.boardInfo = {
+        id: currentBoardId,
+        name: boardData.boardName,
+        project: boardData.project,
+        components: boardData.components
+    };
+    dashboardData.teamSummary = boardData.teamSummary;
+    dashboardData.members = boardData.members;
+    
+    // Also copy sprints if available per-board
+    if (boardData.sprints) {
+        dashboardData.sprints = boardData.sprints;
+    }
+}
+
 // Render entire dashboard
 function renderDashboard() {
+    ensureCurrentBoardData(); // Always ensure correct board data is loaded
     renderHeader();
     renderBandwidthOverview();
     renderSummaryCards();
