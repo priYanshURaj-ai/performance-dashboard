@@ -686,35 +686,37 @@ function renderActivityTrendsChart() {
     const ctx = document.getElementById('activityTrendsChart')?.getContext('2d');
     if (!ctx || !dashboardData) return;
 
-    // Generate daily data from team summary and members
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue'];
-    const members = dashboardData.members || [];
+    // Get daily activity data from n8n (real data)
+    const boardData = currentBoardId && dashboardData.boardsData?.[currentBoardId];
+    const dailyActivity = boardData?.dailyActivity || [];
     
-    // Calculate trends based on available data
-    const summary = dashboardData.teamSummary?.[currentPeriod] || {};
-    const totalDone = summary.done || 0;
-    const totalCreated = summary.total || 0;
-    const activeMembers = members.filter(m => (m.metrics?.[currentPeriod]?.total || 0) > 0).length;
+    let days, issuesCreated, issuesResolved, activeMembersData;
     
-    // Simulate daily distribution (in real implementation, this would come from n8n)
-    const baseCreated = Math.ceil(totalCreated / 7);
-    const baseDone = Math.ceil(totalDone / 7);
-    const baseActive = Math.ceil(activeMembers * 0.8);
-    
-    const issuesCreated = days.map((_, i) => {
-        const variance = Math.random() * 0.4 + 0.8;
-        return Math.round(baseCreated * variance * (i < 5 ? 1 : 0.3));
-    });
-    
-    const issuesResolved = days.map((_, i) => {
-        const variance = Math.random() * 0.4 + 0.8;
-        return Math.round(baseDone * variance * (i < 5 ? 1 : 0.2));
-    });
-    
-    const activeMembersData = days.map((_, i) => {
-        const variance = Math.random() * 0.3 + 0.85;
-        return Math.round(baseActive * variance * (i < 5 ? 1 : 0.4));
-    });
+    if (dailyActivity.length > 0) {
+        // Use REAL data from n8n workflow
+        days = dailyActivity.map(d => d.date);
+        issuesCreated = dailyActivity.map(d => d.created);
+        issuesResolved = dailyActivity.map(d => d.resolved);
+        activeMembersData = dailyActivity.map(d => d.activeMembers);
+        console.log('📊 Using real daily activity data from n8n');
+    } else {
+        // Fallback: Generate simulated data if n8n hasn't run yet
+        console.log('⚠️ No daily activity data - using fallback');
+        const members = dashboardData.members || [];
+        const summary = dashboardData.teamSummary?.[currentPeriod] || {};
+        const totalDone = summary.done || 0;
+        const totalCreated = summary.total || 0;
+        const activeMemberCount = members.filter(m => (m.metrics?.[currentPeriod]?.total || 0) > 0).length;
+        
+        days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue'];
+        const baseCreated = Math.ceil(totalCreated / 7);
+        const baseDone = Math.ceil(totalDone / 7);
+        const baseActive = Math.ceil(activeMemberCount * 0.8);
+        
+        issuesCreated = days.map((_, i) => Math.round(baseCreated * (i < 5 ? 1 : 0.3)));
+        issuesResolved = days.map((_, i) => Math.round(baseDone * (i < 5 ? 1 : 0.2)));
+        activeMembersData = days.map((_, i) => Math.round(baseActive * (i < 5 ? 1 : 0.4)));
+    }
 
     if (activityTrendsChart) activityTrendsChart.destroy();
 
