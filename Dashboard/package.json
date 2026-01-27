@@ -1,0 +1,17 @@
+{
+  "name": "performance-dashboard",
+  "version": "1.0.0",
+  "description": "Team Performance Dashboard - Displays JIRA metrics for leadership",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["dashboard", "performance", "jira", "n8n"],
+  "author": "Platform Team",
+  "license": "ISC",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
+

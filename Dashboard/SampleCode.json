@@ -1,0 +1,399 @@
+{
+    "name": "Smart Daily Sprint Trigger",
+    "nodes": [
+        {
+            "parameters": {
+                "content": "## 🤖 Smart Daily Sprint Trigger\n\n### Purpose\nRuns daily at 9:30 PM and sends email **only 3 times per sprint**:\n- 🏁 **Day 1** → Sprint Start Email\n- 📊 **Middle Day** → Mid-Sprint Check\n- 📊 **Last Day** → Sprint End Report\n\n### Flow\n```\nDaily 9:30 PM\n    ↓\nJIRA Fetch → Detect Day → Route\n    ↓\n┌────────┬────────┬────────┬────────┐\n│ Day 1  │ Middle │ Last   │ Other  │\n└────────┴────────┴────────┴────────┘\n```"
+            },
+            "id": "workflow-doc",
+            "name": "📋 Documentation",
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                -1700,
+                600
+            ]
+        },
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "cronExpression",
+                            "expression": "30 21 * * *"
+                        }
+                    ]
+                }
+            },
+            "id": "daily-trigger",
+            "name": "Daily 9:30 PM",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                -1520,
+                816
+            ]
+        },
+        {
+            "parameters": {},
+            "id": "manual-trigger",
+            "name": "Manual Trigger",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                -1520,
+                1016
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "getAll",
+                "returnAll": true,
+                "options": {
+                    "fieldsByKey": false,
+                    "jql": "project = PAI AND sprint in openSprints() AND component in (\"RE Platform 2.0\", \"Platform 2.0\")"
+                }
+            },
+            "id": "jira-fetch",
+            "name": "JIRA Fetch",
+            "type": "n8n-nodes-base.jira",
+            "typeVersion": 1,
+            "position": [
+                -1250,
+                900
+            ],
+            "alwaysOutputData": true,
+            "credentials": {
+                "jiraSoftwareCloudApi": {
+                    "id": "GFoi8KotNCCPvlLK",
+                    "name": "Jira SW Cloud account 7"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "loose"
+                    },
+                    "conditions": [
+                        {
+                            "id": "check-data",
+                            "leftValue": "={{ $input.all().length }}",
+                            "rightValue": 0,
+                            "operator": {
+                                "type": "number",
+                                "operation": "gt"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                }
+            },
+            "id": "check-data",
+            "name": "Has Data?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                -1050,
+                900
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Detect Sprint Day Position\nconst issues = $input.all();\n\nlet sprintInfo = { name: 'Unknown Sprint', startDate: null, endDate: null };\n\nfor (const item of issues) {\n  const fields = item.json.fields || item.json;\n  if (!fields) continue;\n  \n  const sprintField = fields.customfield_10020;\n  if (sprintField && Array.isArray(sprintField) && sprintField.length > 0) {\n    const activeSprint = sprintField.find(s => s.state === 'active') || sprintField[sprintField.length - 1];\n    if (activeSprint) {\n      sprintInfo.name = activeSprint.name;\n      sprintInfo.startDate = activeSprint.startDate ? new Date(activeSprint.startDate) : null;\n      sprintInfo.endDate = activeSprint.endDate ? new Date(activeSprint.endDate) : null;\n      break;\n    }\n  }\n}\n\nconst today = new Date();\ntoday.setHours(0, 0, 0, 0);\n\nlet phase = 'SKIP';\nlet dayNumber = 0;\nlet totalDays = 14;\nlet middleDay = 7;\n\nif (sprintInfo.startDate && sprintInfo.endDate) {\n  const sprintStart = new Date(sprintInfo.startDate);\n  sprintStart.setHours(0, 0, 0, 0);\n  \n  const sprintEnd = new Date(sprintInfo.endDate);\n  sprintEnd.setHours(0, 0, 0, 0);\n  \n  totalDays = Math.ceil((sprintEnd - sprintStart) / (1000 * 60 * 60 * 24)) + 1;\n  middleDay = Math.floor(totalDays / 2);\n  \n  const daysFromStart = Math.floor((today - sprintStart) / (1000 * 60 * 60 * 24));\n  const daysToEnd = Math.floor((sprintEnd - today) / (1000 * 60 * 60 * 24));\n  \n  dayNumber = daysFromStart + 1;\n  \n  if (daysFromStart === 0) {\n    phase = 'SPRINT_START';\n  } else if (daysFromStart === middleDay) {\n    phase = 'SPRINT_MID';\n  } else if (daysToEnd === 0) {\n    phase = 'SPRINT_END';\n  } else {\n    phase = 'SKIP';\n  }\n}\n\nreturn [{\n  json: {\n    phase,\n    sprintName: sprintInfo.name,\n    dayNumber,\n    totalDays,\n    middleDay: middleDay + 1,\n    issueCount: issues.length\n  }\n}];"
+            },
+            "id": "detect-phase",
+            "name": "Detect Sprint Day",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -850,
+                900
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "loose"
+                    },
+                    "conditions": [
+                        {
+                            "id": "is-start",
+                            "leftValue": "={{ $json.phase }}",
+                            "rightValue": "SPRINT_START",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                }
+            },
+            "id": "check-start",
+            "name": "Is Day 1?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                -600,
+                900
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "loose"
+                    },
+                    "conditions": [
+                        {
+                            "id": "is-mid",
+                            "leftValue": "={{ $json.phase }}",
+                            "rightValue": "SPRINT_MID",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                }
+            },
+            "id": "check-mid",
+            "name": "Is Middle Day?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                -350,
+                1000
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "loose"
+                    },
+                    "conditions": [
+                        {
+                            "id": "is-end",
+                            "leftValue": "={{ $json.phase }}",
+                            "rightValue": "SPRINT_END",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                }
+            },
+            "id": "check-end",
+            "name": "Is Last Day?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                -100,
+                1100
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Day 1 - Sprint Start\nconst data = $input.first().json;\nconsole.log(`🏁 SPRINT START: ${data.sprintName} - Day ${data.dayNumber}/${data.totalDays}`);\nreturn [{ json: { action: 'SEND_START_EMAIL', ...data } }];"
+            },
+            "id": "action-start",
+            "name": "🏁 Sprint Start",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -350,
+                800
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Middle Day - Mid Sprint\nconst data = $input.first().json;\nconsole.log(`📊 MID SPRINT: ${data.sprintName} - Day ${data.dayNumber}/${data.totalDays}`);\nreturn [{ json: { action: 'SEND_MID_EMAIL', ...data } }];"
+            },
+            "id": "action-mid",
+            "name": "📊 Mid Sprint",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -100,
+                900
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Last Day - Sprint End\nconst data = $input.first().json;\nconsole.log(`🏁 SPRINT END: ${data.sprintName} - Day ${data.dayNumber}/${data.totalDays}`);\nreturn [{ json: { action: 'SEND_END_EMAIL', ...data } }];"
+            },
+            "id": "action-end",
+            "name": "🏁 Sprint End",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                150,
+                1000
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Skip - No email today\nconst data = $input.first().json;\nconsole.log(`⏭️ SKIP: ${data.sprintName} - Day ${data.dayNumber}/${data.totalDays} - No email today`);\nreturn [{ json: { action: 'SKIP', ...data } }];"
+            },
+            "id": "action-skip",
+            "name": "⏭️ Skip",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                150,
+                1200
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// No active sprint\nconsole.log('⚠️ No active sprint found');\nreturn [{ json: { action: 'NO_SPRINT', error: 'No JIRA tickets in active sprint' } }];"
+            },
+            "id": "no-data",
+            "name": "⚠️ No Sprint",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -850,
+                1100
+            ]
+        }
+    ],
+    "connections": {
+        "Daily 9:30 PM": {
+            "main": [
+                [
+                    {
+                        "node": "JIRA Fetch",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Manual Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "JIRA Fetch",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "JIRA Fetch": {
+            "main": [
+                [
+                    {
+                        "node": "Has Data?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Has Data?": {
+            "main": [
+                [
+                    {
+                        "node": "Detect Sprint Day",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "⚠️ No Sprint",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Detect Sprint Day": {
+            "main": [
+                [
+                    {
+                        "node": "Is Day 1?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Is Day 1?": {
+            "main": [
+                [
+                    {
+                        "node": "🏁 Sprint Start",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Is Middle Day?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Is Middle Day?": {
+            "main": [
+                [
+                    {
+                        "node": "📊 Mid Sprint",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Is Last Day?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Is Last Day?": {
+            "main": [
+                [
+                    {
+                        "node": "🏁 Sprint End",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "⏭️ Skip",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "d50cfcafa5a716b7441bc3a50f236ea3cd4ac904c2b605713cca635f4cc16469"
+    }
+}

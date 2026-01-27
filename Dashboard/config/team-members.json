@@ -1,0 +1,159 @@
+{
+  "teamName": "Platform 2.0 & RE Platform 2.0",
+  "project": "PAI",
+  "components": ["RE Platform 2.0", "Platform 2.0"],
+  "statuses": ["To Do", "In Progress", "UAT", "Done"],
+  "members": [
+    {
+      "name": "Sreerag Unnikrishnan",
+      "email": "sreerag.unnikrishnan@paytm.com",
+      "jiraUsername": "sreerag.unnikrishnan",
+      "avatar": "SU"
+    },
+    {
+      "name": "Dinesh Kumar",
+      "email": "dinesh34.kumar@paytm.com",
+      "jiraUsername": "dinesh34.kumar",
+      "avatar": "DK"
+    },
+    {
+      "name": "Huan Zheng",
+      "email": "huan.zheng@paytm.com",
+      "jiraUsername": "huan.zheng",
+      "avatar": "HZ"
+    },
+    {
+      "name": "Keshav Sharma",
+      "email": "keshav4.sharma@paytm.com",
+      "jiraUsername": "keshav4.sharma",
+      "avatar": "KS"
+    },
+    {
+      "name": "Kshitiz Gupta",
+      "email": "kshitiz1.gupta@paytm.com",
+      "jiraUsername": "kshitiz1.gupta",
+      "avatar": "KG"
+    },
+    {
+      "name": "Pankaj Sirohi",
+      "email": "pankaj.sirohi@paytm.com",
+      "jiraUsername": "pankaj.sirohi",
+      "avatar": "PS"
+    },
+    {
+      "name": "Rohit Mishra",
+      "email": "rohit8.mishra@paytmpayments.com",
+      "jiraUsername": "rohit8.mishra",
+      "avatar": "RM"
+    },
+    {
+      "name": "Arijit Bhattacharyya",
+      "email": "Arijit.bhattacharyya@paytm.com",
+      "jiraUsername": "Arijit.bhattacharyya",
+      "avatar": "AB"
+    },
+    {
+      "name": "Aditya Shahi",
+      "email": "aditya.shahi@paytm.com",
+      "jiraUsername": "aditya.shahi",
+      "avatar": "AS"
+    },
+    {
+      "name": "Amit Tomar",
+      "email": "amit2.tomar@paytm.com",
+      "jiraUsername": "amit2.tomar",
+      "avatar": "AT"
+    },
+    {
+      "name": "Arjit Gupta",
+      "email": "arjit.gupta@paytm.com",
+      "jiraUsername": "arjit.gupta",
+      "avatar": "AG"
+    },
+    {
+      "name": "Britelyne Dass",
+      "email": "britelyne.dass@paytm.com",
+      "jiraUsername": "britelyne.dass",
+      "avatar": "BD"
+    },
+    {
+      "name": "Eshita Gupta",
+      "email": "eshita1.gupta@paytm.com",
+      "jiraUsername": "eshita1.gupta",
+      "avatar": "EG"
+    },
+    {
+      "name": "Girish Kumar",
+      "email": "girish3.kumar@paytm.com",
+      "jiraUsername": "girish3.kumar",
+      "avatar": "GK"
+    },
+    {
+      "name": "Pappu Kumar",
+      "email": "pappu1.kumar@paytm.com",
+      "jiraUsername": "pappu1.kumar",
+      "avatar": "PK"
+    },
+    {
+      "name": "Sanyam Jain",
+      "email": "sanyam1.jain@paytm.com",
+      "jiraUsername": "sanyam1.jain",
+      "avatar": "SJ"
+    },
+    {
+      "name": "Deepak Rawat",
+      "email": "deepak5.rawat@paytm.com",
+      "jiraUsername": "deepak5.rawat",
+      "avatar": "DR"
+    },
+    {
+      "name": "Prakarsh Srivastava",
+      "email": "prakarsh.srivastava@paytm.com",
+      "jiraUsername": "prakarsh.srivastava",
+      "avatar": "PS"
+    },
+    {
+      "name": "Abhishek Keshari",
+      "email": "abhishek.keshari@paytm.com",
+      "jiraUsername": "abhishek.keshari",
+      "avatar": "AK"
+    },
+    {
+      "name": "Anand Yadav",
+      "email": "anand3.yadav@paytm.com",
+      "jiraUsername": "anand3.yadav",
+      "avatar": "AY"
+    },
+    {
+      "name": "Anshul Chauhan",
+      "email": "anshul1.chauhan@paytm.com",
+      "jiraUsername": "anshul1.chauhan",
+      "avatar": "AC"
+    },
+    {
+      "name": "Apurva Ninave",
+      "email": "apurva.ninave@paytm.com",
+      "jiraUsername": "apurva.ninave",
+      "avatar": "AN"
+    },
+    {
+      "name": "Babaji Komali",
+      "email": "babaji.komali@paytm.com",
+      "jiraUsername": "babaji.komali",
+      "avatar": "BK"
+    },
+    {
+      "name": "Deepika Suyal",
+      "email": "deepika.suyal@paytm.com",
+      "jiraUsername": "deepika.suyal",
+      "avatar": "DS"
+    },
+    {
+      "name": "Tushar Aggarwal",
+      "email": "tushar1.aggarwal@paytm.com",
+      "jiraUsername": "tushar1.aggarwal",
+      "avatar": "TA"
+    }
+  ]
+}
+

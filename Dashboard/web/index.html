@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Performance Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <div class="logo-text">
+                        <h1>Performance Dashboard</h1>
+                        <span class="subtitle" id="boardName">Loading...</span>
+                    </div>
+                </div>
+                <!-- NEW: Board Selector Dropdown -->
+                <div class="board-selector-container">
+                    <label class="board-selector-label">📊 Board:</label>
+                    <select id="boardSelector" class="board-selector">
+                        <option value="loading">Loading boards...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="last-updated">
+                    <span class="update-label">Last Updated</span>
+                    <span class="update-time" id="lastUpdated">Loading...</span>
+                </div>
+                <div class="period-info" id="periodInfo">
+                    <span class="period-icon">📅</span>
+                    <span class="period-range" id="periodRange">--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sprint Bandwidth Overview -->
+        <div class="bandwidth-overview">
+            <div class="bandwidth-overview-header">
+                <h2>🏃 Sprint Bandwidth Overview</h2>
+                <div class="sprint-info-badge" id="currentSprintBadge">
+                    <span class="sprint-badge-name" id="overviewSprintName">Loading...</span>
+                    <span class="sprint-badge-day" id="overviewSprintDay">Day --</span>
+                </div>
+            </div>
+            <div class="bandwidth-overview-cards">
+                <!-- Most Utilized -->
+                <div class="bandwidth-card high-utilization">
+                    <div class="bandwidth-card-header">
+                        <span class="bandwidth-card-icon">🔥</span>
+                        <span class="bandwidth-card-title">Highest Utilization</span>
+                    </div>
+                    <div class="bandwidth-card-list" id="highUtilizationList">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+                
+                <!-- Most Available (Task-based = Completion %) -->
+                <div class="bandwidth-card low-utilization">
+                    <div class="bandwidth-card-header">
+                        <span class="bandwidth-card-icon">📋</span>
+                        <span class="bandwidth-card-title">Most Available (Tasks Done %)</span>
+                    </div>
+                    <div class="bandwidth-card-list" id="lowUtilizationList">
+                        <!-- Dynamic content - shows members with highest % of tasks COMPLETED -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Period Selector (moved below Sprint Overview) -->
+        <div class="period-selector">
+            <button class="period-btn active" data-period="7days">
+                <span class="period-icon">📅</span>
+                <span class="period-label">Last 7 Days</span>
+            </button>
+            <button class="period-btn" data-period="15days">
+                <span class="period-icon">📆</span>
+                <span class="period-label">Last 15 Days</span>
+            </button>
+            <button class="period-btn" data-period="30days">
+                <span class="period-icon">🗓️</span>
+                <span class="period-label">Last 30 Days</span>
+            </button>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card total">
+                <div class="card-icon">📋</div>
+                <div class="card-content">
+                    <span class="card-value" id="totalTasks">0</span>
+                    <span class="card-label">Total Tasks</span>
+                </div>
+                <div class="card-bar"></div>
+            </div>
+            <div class="summary-card done">
+                <div class="card-icon">✅</div>
+                <div class="card-content">
+                    <span class="card-value" id="doneTasks">0</span>
+                    <span class="card-label">Done</span>
+                    <span class="card-percent" id="donePercent">0%</span>
+                </div>
+                <div class="card-bar"></div>
+            </div>
+            <div class="summary-card progress">
+                <div class="card-icon">🔄</div>
+                <div class="card-content">
+                    <span class="card-value" id="inProgressTasks">0</span>
+                    <span class="card-label">In Progress</span>
+                    <span class="card-percent" id="inProgressPercent">0%</span>
+                </div>
+                <div class="card-bar"></div>
+            </div>
+            <div class="summary-card uat">
+                <div class="card-icon">🧪</div>
+                <div class="card-content">
+                    <span class="card-value" id="uatTasks">0</span>
+                    <span class="card-label">UAT</span>
+                    <span class="card-percent" id="uatPercent">0%</span>
+                </div>
+                <div class="card-bar"></div>
+            </div>
+            <div class="summary-card todo">
+                <div class="card-icon">📝</div>
+                <div class="card-content">
+                    <span class="card-value" id="todoTasks">0</span>
+                    <span class="card-label">To Do</span>
+                    <span class="card-percent" id="todoPercent">0%</span>
+                </div>
+                <div class="card-bar"></div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Team Members Table -->
+            <div class="members-section">
+                <div class="section-header">
+                    <h2>👥 Individual Performance</h2>
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Search team member...">
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="members-table">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-sort="name">
+                                    <span>👤 Team Member</span>
+                                    <span class="sort-icon">↕</span>
+                                </th>
+                                <th class="sortable" data-sort="total">
+                                    <span>📊 Total</span>
+                                    <span class="sort-icon">↕</span>
+                                </th>
+                                <th class="sortable" data-sort="bandwidth">
+                                    <span>⏱️ Bandwidth</span>
+                                    <span class="sort-icon">↕</span>
+                                </th>
+                                <th class="sortable" data-sort="done">
+                                    <span>✅ Done</span>
+                                    <span class="sort-icon">↕</span>
+                                </th>
+                                <th class="sortable" data-sort="inProgress">
+                                    <span>🔄 In Progress</span>
+                                    <span class="sort-icon">↕</span>
+                                </th>
+                                <th class="sortable" data-sort="uat">
+                                    <span>🧪 UAT</span>
+                                    <span class="sort-icon">↕</span>
+                                </th>
+                                <th class="sortable" data-sort="toDo">
+                                    <span>📝 To Do</span>
+                                    <span class="sort-icon">↕</span>
+                                </th>
+                                <th>📈 Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody id="membersTableBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-card">
+                    <h3>📊 Status Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>📈 Top Performers</h3>
+                    <div class="chart-container">
+                        <canvas id="topPerformersChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>🚀 Performance Dashboard v2.0 • Auto-updates daily at 9:30 PM IST • 6 hrs/day bandwidth calculation</p>
+        </footer>
+    </div>
+
+    <!-- Member Detail Modal -->
+    <div class="modal-overlay" id="memberModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-member-info">
+                    <div class="modal-avatar" id="modalAvatar">SU</div>
+                    <div class="modal-member-details">
+                        <h2 id="modalMemberName">Member Name</h2>
+                        <p id="modalMemberEmail">email@example.com</p>
+                    </div>
+                </div>
+                <button class="modal-close" id="modalClose">✕</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Sprint Section (Primary) -->
+                <div class="modal-section sprint-section">
+                    <div class="sprint-header">
+                        <h3>🏃 Sprint Bandwidth</h3>
+                        <div class="sprint-selector">
+                            <button class="sprint-btn active" data-sprint="current" id="sprintCurrentBtn">Current Sprint</button>
+                            <button class="sprint-btn" data-sprint="previous" id="sprintPreviousBtn">Previous Sprint</button>
+                        </div>
+                    </div>
+                    <div class="sprint-info-bar">
+                        <span class="sprint-name" id="sprintName">Dec Sprint 2</span>
+                        <span class="sprint-dates" id="sprintDates">Dec 16 - Dec 29</span>
+                        <span class="sprint-days" id="sprintDays">10 working days</span>
+                    </div>
+                    <div class="bandwidth-container">
+                        <div class="bandwidth-bar-wrapper">
+                            <div class="bandwidth-bar sprint-bar">
+                                <div class="bandwidth-fill" id="sprintBandwidthFill"></div>
+                            </div>
+                            <div class="bandwidth-labels">
+                                <span class="bandwidth-logged" id="sprintHoursLogged">0h logged</span>
+                                <span class="bandwidth-total" id="sprintHoursTotal">of 80h available</span>
+                            </div>
+                        </div>
+                        <div class="bandwidth-stats">
+                            <div class="bandwidth-stat">
+                                <span class="stat-value" id="sprintUtilization">0%</span>
+                                <span class="stat-label">Utilized</span>
+                            </div>
+                            <div class="bandwidth-stat">
+                                <span class="stat-value" id="sprintAvailable">80h</span>
+                                <span class="stat-label">Available</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sprint Task Summary -->
+                    <div class="sprint-task-summary">
+                        <div class="sprint-stat">
+                            <span class="sprint-stat-value" id="sprintTotalTasks">0</span>
+                            <span class="sprint-stat-label">Tasks Picked</span>
+                        </div>
+                        <div class="sprint-stat done">
+                            <span class="sprint-stat-value" id="sprintDoneTasks">0</span>
+                            <span class="sprint-stat-label">Done</span>
+                        </div>
+                        <div class="sprint-stat progress">
+                            <span class="sprint-stat-value" id="sprintProgressTasks">0</span>
+                            <span class="sprint-stat-label">In Progress</span>
+                        </div>
+                        <div class="sprint-stat uat">
+                            <span class="sprint-stat-value" id="sprintUatTasks">0</span>
+                            <span class="sprint-stat-label">UAT</span>
+                        </div>
+                        <div class="sprint-stat todo">
+                            <span class="sprint-stat-value" id="sprintTodoTasks">0</span>
+                            <span class="sprint-stat-label">To Do</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sprint Tickets -->
+                <div class="modal-section sprint-tickets-section">
+                    <h3>📋 Sprint Tickets</h3>
+                    <div class="top-tickets-list" id="sprintTicketsList">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="modal-divider">
+                    <span>Period-based Stats</span>
+                </div>
+
+                <!-- Period Bandwidth Section -->
+                <div class="modal-section bandwidth-section">
+                    <h3>📊 Period Bandwidth <span class="period-badge" id="modalPeriodBadge">Last 7 Days</span></h3>
+                    <div class="bandwidth-container compact">
+                        <div class="bandwidth-bar-wrapper">
+                            <div class="bandwidth-bar">
+                                <div class="bandwidth-fill" id="bandwidthFill"></div>
+                            </div>
+                            <div class="bandwidth-labels">
+                                <span class="bandwidth-logged" id="bandwidthLogged">0h logged</span>
+                                <span class="bandwidth-total" id="bandwidthTotal">of 40h available</span>
+                            </div>
+                        </div>
+                        <div class="bandwidth-stats">
+                            <div class="bandwidth-stat">
+                                <span class="stat-value" id="bandwidthPercent">0%</span>
+                                <span class="stat-label">Utilized</span>
+                            </div>
+                            <div class="bandwidth-stat">
+                                <span class="stat-value" id="bandwidthAvailable">40h</span>
+                                <span class="stat-label">Available</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task Summary Section -->
+                <div class="modal-section task-summary-section">
+                    <h3>📋 Period Task Summary</h3>
+                    <div class="task-summary-grid">
+                        <div class="task-stat total">
+                            <span class="task-stat-value" id="modalTotalTasks">0</span>
+                            <span class="task-stat-label">Total</span>
+                        </div>
+                        <div class="task-stat done">
+                            <span class="task-stat-value" id="modalDoneTasks">0</span>
+                            <span class="task-stat-label">Done</span>
+                        </div>
+                        <div class="task-stat progress">
+                            <span class="task-stat-value" id="modalProgressTasks">0</span>
+                            <span class="task-stat-label">In Progress</span>
+                        </div>
+                        <div class="task-stat uat">
+                            <span class="task-stat-value" id="modalUatTasks">0</span>
+                            <span class="task-stat-label">UAT</span>
+                        </div>
+                        <div class="task-stat todo">
+                            <span class="task-stat-value" id="modalTodoTasks">0</span>
+                            <span class="task-stat-label">To Do</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Tickets Section -->
+                <div class="modal-section top-tickets-section">
+                    <h3>🔥 Top Tickets by Time Logged</h3>
+                    <div class="top-tickets-list" id="topTicketsList">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
+
