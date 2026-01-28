@@ -1247,11 +1247,11 @@ function renderSprintTickets(sprintIssues) {
 }
 
 // ============================================
-// TASKS MODAL FUNCTIONS
+// TASKS MODAL FUNCTIONS (Global)
 // ============================================
 
-// Open tasks modal for a specific status
-function openTasksModal(statusFilter) {
+// Open tasks modal for a specific status - MUST be global for onclick
+window.openTasksModal = function(statusFilter) {
     console.log('🔓 Opening modal for:', statusFilter);
     
     if (!dashboardData || !dashboardData.boardsData) {
@@ -1353,8 +1353,8 @@ function openTasksModal(statusFilter) {
     document.body.style.overflow = 'hidden';
 }
 
-// Close tasks modal
-function closeTasksModal() {
+// Close tasks modal - MUST be global
+window.closeTasksModal = function() {
     const tasksModal = document.getElementById('tasksModal');
     tasksModal.classList.remove('active');
     document.body.style.overflow = '';
@@ -1366,24 +1366,26 @@ function setupTasksModalListeners() {
     const tasksModalClose = document.getElementById('tasksModalClose');
     
     if (tasksModalClose) {
-        tasksModalClose.addEventListener('click', closeTasksModal);
+        tasksModalClose.addEventListener('click', window.closeTasksModal);
     }
     
     if (tasksModal) {
         tasksModal.addEventListener('click', (e) => {
-            if (e.target === tasksModal) closeTasksModal();
+            if (e.target === tasksModal) window.closeTasksModal();
         });
     }
     
     // ESC key to close
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            const tasksModal = document.getElementById('tasksModal');
-            if (tasksModal && tasksModal.classList.contains('active')) {
-                closeTasksModal();
+            const modal = document.getElementById('tasksModal');
+            if (modal && modal.classList.contains('active')) {
+                window.closeTasksModal();
             }
         }
     });
+    
+    console.log('✅ Tasks modal listeners initialized');
 }
 
 // Initialize on DOM ready
