@@ -1252,30 +1252,40 @@ function renderSprintTickets(sprintIssues) {
 
 // Open tasks modal for a specific status
 function openTasksModal(statusFilter) {
-    if (!dashboardData || !dashboardData.boardsData) return;
+    console.log('🔓 Opening modal for:', statusFilter);
+    
+    if (!dashboardData || !dashboardData.boardsData) {
+        console.log('❌ No dashboard data');
+        return;
+    }
     
     const boardData = dashboardData.boardsData[currentBoardId];
-    if (!boardData) return;
+    if (!boardData) {
+        console.log('❌ No board data for:', currentBoardId);
+        return;
+    }
     
-    // Get all issues from all members
+    // Get all issues from all members (use allIssues if available, fallback to topIssues)
     const allTasks = [];
     const seenKeys = new Set();
     
     boardData.members.forEach(member => {
         const metrics = member.metrics[currentPeriod];
-        if (metrics && metrics.topIssues) {
-            metrics.topIssues.forEach(issue => {
-                if (!seenKeys.has(issue.key)) {
-                    seenKeys.add(issue.key);
-                    allTasks.push({
-                        ...issue,
-                        assignee: member.name,
-                        assigneeAvatar: member.avatar
-                    });
-                }
-            });
-        }
+        // Prefer allIssues (complete list), fallback to topIssues
+        const issuesList = metrics?.allIssues || metrics?.topIssues || [];
+        issuesList.forEach(issue => {
+            if (!seenKeys.has(issue.key)) {
+                seenKeys.add(issue.key);
+                allTasks.push({
+                    ...issue,
+                    assignee: member.name,
+                    assigneeAvatar: member.avatar
+                });
+            }
+        });
     });
+    
+    console.log('📋 Total tasks collected:', allTasks.length);
     
     // Filter tasks by status
     let filteredTasks = allTasks;
