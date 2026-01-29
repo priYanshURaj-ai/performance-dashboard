@@ -678,7 +678,7 @@ function updateSortIcons() {
 function renderCharts() {
     renderStatusChart();
     renderTopPerformersChart();
-    renderActivityTrendsChart();
+    // renderActivityTrendsChart(); // REMOVED AS PER REQUEST
 }
 
 // Daily Activity Trends chart
