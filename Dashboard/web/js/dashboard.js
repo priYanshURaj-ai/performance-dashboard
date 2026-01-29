@@ -1252,10 +1252,11 @@ function renderSprintTickets(sprintIssues) {
 
 // Open tasks modal for a specific status - MUST be global for onclick
 window.openTasksModal = function(statusFilter) {
-    console.log('🔓 Opening modal for:', statusFilter);
+    console.log('🔓 Opening modal for:', statusFilter, 'Period:', currentPeriod);
     
     if (!dashboardData || !dashboardData.boardsData) {
         console.log('❌ No dashboard data');
+        alert('Dashboard data not loaded yet. Please wait and try again.');
         return;
     }
     
@@ -1265,27 +1266,34 @@ window.openTasksModal = function(statusFilter) {
         return;
     }
     
-    // Get all issues from all members (use allIssues if available, fallback to topIssues)
-    const allTasks = [];
-    const seenKeys = new Set();
+    // Use GLOBAL allIssues list (includes ALL tasks, even unassigned)
+    let allTasks = [];
     
-    boardData.members.forEach(member => {
-        const metrics = member.metrics[currentPeriod];
-        // Prefer allIssues (complete list), fallback to topIssues
-        const issuesList = metrics?.allIssues || metrics?.topIssues || [];
-        issuesList.forEach(issue => {
-            if (!seenKeys.has(issue.key)) {
-                seenKeys.add(issue.key);
-                allTasks.push({
-                    ...issue,
-                    assignee: member.name,
-                    assigneeAvatar: member.avatar
-                });
-            }
+    if (boardData.allIssues && boardData.allIssues[currentPeriod]) {
+        // New structure: global issues list per period
+        allTasks = [...boardData.allIssues[currentPeriod]];
+        console.log('📋 Using global allIssues:', allTasks.length);
+    } else {
+        // Fallback: collect from members (old structure)
+        const seenKeys = new Set();
+        boardData.members.forEach(member => {
+            const metrics = member.metrics[currentPeriod];
+            const issuesList = metrics?.allIssues || metrics?.topIssues || [];
+            issuesList.forEach(issue => {
+                if (!seenKeys.has(issue.key)) {
+                    seenKeys.add(issue.key);
+                    allTasks.push({
+                        ...issue,
+                        assignee: member.name,
+                        assigneeAvatar: member.avatar
+                    });
+                }
+            });
         });
-    });
+        console.log('📋 Using member-collected tasks:', allTasks.length);
+    }
     
-    console.log('📋 Total tasks collected:', allTasks.length);
+    console.log('📋 Total tasks for modal:', allTasks.length);
     
     // Filter tasks by status
     let filteredTasks = allTasks;
