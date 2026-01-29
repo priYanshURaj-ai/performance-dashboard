@@ -686,19 +686,21 @@ function renderActivityTrendsChart() {
     const ctx = document.getElementById('activityTrendsChart')?.getContext('2d');
     if (!ctx || !dashboardData) return;
 
-    // Get daily activity data from n8n (real data)
+    // Get daily activity data from n8n (real data) - FIXED TO 15 DAYS
     const boardData = currentBoardId && dashboardData.boardsData?.[currentBoardId];
     const dailyActivity = boardData?.dailyActivity || [];
     
-    let days, issuesCreated, issuesResolved, activeMembersData;
+    let days, issuesCreated, issuesTouched, issuesFinished, hoursLogged, activeMembersData;
     
     if (dailyActivity.length > 0) {
-        // Use REAL data from n8n workflow
+        // Use REAL data from n8n workflow (15 days)
         days = dailyActivity.map(d => d.date);
-        issuesCreated = dailyActivity.map(d => d.created);
-        issuesResolved = dailyActivity.map(d => d.resolved);
-        activeMembersData = dailyActivity.map(d => d.activeMembers);
-        console.log('📊 Using real daily activity data from n8n');
+        issuesCreated = dailyActivity.map(d => d.created || 0);           // Daily new items
+        issuesTouched = dailyActivity.map(d => d.touched || 0);           // Daily items touched/updated
+        issuesFinished = dailyActivity.map(d => d.finished || 0);         // Daily items finished (Done)
+        hoursLogged = dailyActivity.map(d => d.hoursLogged || 0);         // Daily hours logged
+        activeMembersData = dailyActivity.map(d => d.activeMembers || 0);
+        console.log('📊 Using real 15-day activity data from n8n');
     } else {
         // Fallback: Generate simulated data if n8n hasn't run yet
         console.log('⚠️ No daily activity data - using fallback');
@@ -708,14 +710,20 @@ function renderActivityTrendsChart() {
         const totalCreated = summary.total || 0;
         const activeMemberCount = members.filter(m => (m.metrics?.[currentPeriod]?.total || 0) > 0).length;
         
-        days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue'];
-        const baseCreated = Math.ceil(totalCreated / 7);
-        const baseDone = Math.ceil(totalDone / 7);
+        days = Array.from({length: 15}, (_, i) => {
+            const d = new Date();
+            d.setDate(d.getDate() - (14 - i));
+            return d.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' });
+        });
+        const baseCreated = Math.ceil(totalCreated / 15);
+        const baseDone = Math.ceil(totalDone / 15);
         const baseActive = Math.ceil(activeMemberCount * 0.8);
         
-        issuesCreated = days.map((_, i) => Math.round(baseCreated * (i < 5 ? 1 : 0.3)));
-        issuesResolved = days.map((_, i) => Math.round(baseDone * (i < 5 ? 1 : 0.2)));
-        activeMembersData = days.map((_, i) => Math.round(baseActive * (i < 5 ? 1 : 0.4)));
+        issuesCreated = days.map((_, i) => Math.round(baseCreated * (i < 10 ? 1 : 0.3)));
+        issuesTouched = days.map((_, i) => Math.round(baseCreated * 1.5 * (i < 10 ? 1 : 0.3)));
+        issuesFinished = days.map((_, i) => Math.round(baseDone * (i < 10 ? 1 : 0.2)));
+        hoursLogged = days.map((_, i) => Math.round(baseActive * 3 * (i < 10 ? 1 : 0.4)));
+        activeMembersData = days.map((_, i) => Math.round(baseActive * (i < 10 ? 1 : 0.4)));
     }
 
     if (activityTrendsChart) activityTrendsChart.destroy();
@@ -726,7 +734,7 @@ function renderActivityTrendsChart() {
             labels: days,
             datasets: [
                 {
-                    label: 'Issues Created',
+                    label: 'New Items',
                     data: issuesCreated,
                     borderColor: 'rgba(0, 212, 255, 1)',
                     backgroundColor: 'rgba(0, 212, 255, 0.1)',
@@ -737,8 +745,19 @@ function renderActivityTrendsChart() {
                     pointBackgroundColor: 'rgba(0, 212, 255, 1)'
                 },
                 {
-                    label: 'Issues Resolved',
-                    data: issuesResolved,
+                    label: 'Items Touched',
+                    data: issuesTouched,
+                    borderColor: 'rgba(255, 159, 67, 1)',
+                    backgroundColor: 'rgba(255, 159, 67, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: false,
+                    pointRadius: 4,
+                    pointBackgroundColor: 'rgba(255, 159, 67, 1)'
+                },
+                {
+                    label: 'Items Finished',
+                    data: issuesFinished,
                     borderColor: 'rgba(0, 255, 136, 1)',
                     backgroundColor: 'rgba(0, 255, 136, 0.1)',
                     borderWidth: 2,
@@ -748,15 +767,15 @@ function renderActivityTrendsChart() {
                     pointBackgroundColor: 'rgba(0, 255, 136, 1)'
                 },
                 {
-                    label: 'Active Members',
-                    data: activeMembersData,
-                    borderColor: 'rgba(168, 85, 247, 1)',
-                    backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                    label: 'Hours Logged',
+                    data: hoursLogged,
+                    borderColor: 'rgba(255, 217, 61, 1)',
+                    backgroundColor: 'rgba(255, 217, 61, 0.1)',
                     borderWidth: 2,
                     tension: 0.4,
                     fill: false,
                     pointRadius: 4,
-                    pointBackgroundColor: 'rgba(168, 85, 247, 1)',
+                    pointBackgroundColor: 'rgba(255, 217, 61, 1)',
                     yAxisID: 'y1'
                 }
             ]
@@ -788,8 +807,8 @@ function renderActivityTrendsChart() {
                     position: 'right',
                     beginAtZero: true,
                     grid: { drawOnChartArea: false },
-                    ticks: { color: '#a855f7', font: { family: "'JetBrains Mono', monospace", size: 11 } },
-                    title: { display: true, text: 'Members', color: '#a855f7' }
+                    ticks: { color: '#ffd93d', font: { family: "'JetBrains Mono', monospace", size: 11 } },
+                    title: { display: true, text: 'Hours Logged', color: '#ffd93d' }
                 }
             },
             plugins: {
