@@ -96,17 +96,18 @@
             </button>
         </div>
 
-        <!-- Summary Cards -->
+        <!-- Summary Cards (Clickable) -->
         <div class="summary-cards">
-            <div class="summary-card total">
+            <div class="summary-card total clickable-card" onclick="openTasksModal('total')" title="Click to view all tasks">
                 <div class="card-icon">📋</div>
                 <div class="card-content">
                     <span class="card-value" id="totalTasks">0</span>
                     <span class="card-label">Total Tasks</span>
                 </div>
                 <div class="card-bar"></div>
+                <div class="card-click-hint">Click to view</div>
             </div>
-            <div class="summary-card done">
+            <div class="summary-card done clickable-card" onclick="openTasksModal('done')" title="Click to view done tasks">
                 <div class="card-icon">✅</div>
                 <div class="card-content">
                     <span class="card-value" id="doneTasks">0</span>
@@ -114,8 +115,9 @@
                     <span class="card-percent" id="donePercent">0%</span>
                 </div>
                 <div class="card-bar"></div>
+                <div class="card-click-hint">Click to view</div>
             </div>
-            <div class="summary-card progress">
+            <div class="summary-card progress clickable-card" onclick="openTasksModal('inProgress')" title="Click to view in-progress tasks">
                 <div class="card-icon">🔄</div>
                 <div class="card-content">
                     <span class="card-value" id="inProgressTasks">0</span>
@@ -123,8 +125,9 @@
                     <span class="card-percent" id="inProgressPercent">0%</span>
                 </div>
                 <div class="card-bar"></div>
+                <div class="card-click-hint">Click to view</div>
             </div>
-            <div class="summary-card uat">
+            <div class="summary-card uat clickable-card" onclick="openTasksModal('uat')" title="Click to view UAT tasks">
                 <div class="card-icon">🧪</div>
                 <div class="card-content">
                     <span class="card-value" id="uatTasks">0</span>
@@ -132,8 +135,9 @@
                     <span class="card-percent" id="uatPercent">0%</span>
                 </div>
                 <div class="card-bar"></div>
+                <div class="card-click-hint">Click to view</div>
             </div>
-            <div class="summary-card todo">
+            <div class="summary-card todo clickable-card" onclick="openTasksModal('toDo')" title="Click to view to-do tasks">
                 <div class="card-icon">📝</div>
                 <div class="card-content">
                     <span class="card-value" id="todoTasks">0</span>
@@ -141,6 +145,26 @@
                     <span class="card-percent" id="todoPercent">0%</span>
                 </div>
                 <div class="card-bar"></div>
+                <div class="card-click-hint">Click to view</div>
+            </div>
+        </div>
+
+        <!-- Tasks List Modal -->
+        <div class="tasks-modal" id="tasksModal">
+            <div class="tasks-modal-content">
+                <div class="tasks-modal-header">
+                    <div class="tasks-modal-title">
+                        <span class="tasks-modal-icon" id="tasksModalIcon">📋</span>
+                        <h2 id="tasksModalTitle">Tasks</h2>
+                        <span class="tasks-modal-count" id="tasksModalCount">0 items</span>
+                    </div>
+                    <button class="tasks-modal-close" id="tasksModalClose">&times;</button>
+                </div>
+                <div class="tasks-modal-body">
+                    <div class="tasks-list" id="tasksModalList">
+                        <!-- Dynamic task list -->
+                    </div>
+                </div>
             </div>
         </div>
 

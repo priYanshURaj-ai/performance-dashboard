@@ -119,13 +119,13 @@ async function loadData() {
         // Add cache-busting parameter to get fresh data
         const cacheBuster = `?t=${Date.now()}`;
         const response = await fetch(GIST_RAW_URL + cacheBuster);
-        
-        if (response.ok) {
+            
+            if (response.ok) {
             dashboardData = await response.json();
             console.log('✅ Data loaded from GitHub Gist:', new Date(dashboardData.lastUpdated).toLocaleString());
-            console.log(`   👥 Members: ${dashboardData.members?.length || 0}`);
+                console.log(`   👥 Members: ${dashboardData.members?.length || 0}`);
             console.log(`   📊 Version: ${dashboardData.version || '1.0'}`);
-            return;
+                return;
         }
         
         // Fallback to local file
@@ -1246,5 +1246,160 @@ function renderSprintTickets(sprintIssues) {
     elements.sprintTicketsList.innerHTML = html;
 }
 
+// ============================================
+// TASKS MODAL FUNCTIONS (Global)
+// ============================================
+
+// Open tasks modal for a specific status - MUST be global for onclick
+window.openTasksModal = function(statusFilter) {
+    console.log('🔓 Opening modal for:', statusFilter, 'Period:', currentPeriod);
+    
+    if (!dashboardData || !dashboardData.boardsData) {
+        console.log('❌ No dashboard data');
+        alert('Dashboard data not loaded yet. Please wait and try again.');
+        return;
+    }
+    
+    const boardData = dashboardData.boardsData[currentBoardId];
+    if (!boardData) {
+        console.log('❌ No board data for:', currentBoardId);
+        return;
+    }
+    
+    // Use GLOBAL allIssues list (includes ALL tasks, even unassigned)
+    let allTasks = [];
+    
+    if (boardData.allIssues && boardData.allIssues[currentPeriod]) {
+        // New structure: global issues list per period
+        allTasks = [...boardData.allIssues[currentPeriod]];
+        console.log('📋 Using global allIssues:', allTasks.length);
+    } else {
+        // Fallback: collect from members (old structure)
+        const seenKeys = new Set();
+        boardData.members.forEach(member => {
+            const metrics = member.metrics[currentPeriod];
+            const issuesList = metrics?.allIssues || metrics?.topIssues || [];
+            issuesList.forEach(issue => {
+                if (!seenKeys.has(issue.key)) {
+                    seenKeys.add(issue.key);
+                    allTasks.push({
+                        ...issue,
+                        assignee: member.name,
+                        assigneeAvatar: member.avatar
+                    });
+                }
+            });
+        });
+        console.log('📋 Using member-collected tasks:', allTasks.length);
+    }
+    
+    console.log('📋 Total tasks for modal:', allTasks.length);
+    
+    // Filter tasks by status
+    let filteredTasks = allTasks;
+    let modalTitle = 'All Tasks';
+    let modalIcon = '📋';
+    
+    if (statusFilter !== 'total') {
+        filteredTasks = allTasks.filter(task => task.status === statusFilter);
+        
+        const statusConfig = {
+            'done': { title: 'Done Tasks', icon: '✅' },
+            'inProgress': { title: 'In Progress Tasks', icon: '🔄' },
+            'uat': { title: 'UAT Tasks', icon: '🧪' },
+            'toDo': { title: 'To Do Tasks', icon: '📝' }
+        };
+        
+        if (statusConfig[statusFilter]) {
+            modalTitle = statusConfig[statusFilter].title;
+            modalIcon = statusConfig[statusFilter].icon;
+        }
+    }
+    
+    // Update modal content
+    const tasksModal = document.getElementById('tasksModal');
+    const tasksModalTitle = document.getElementById('tasksModalTitle');
+    const tasksModalIcon = document.getElementById('tasksModalIcon');
+    const tasksModalCount = document.getElementById('tasksModalCount');
+    const tasksModalList = document.getElementById('tasksModalList');
+    
+    tasksModalTitle.textContent = modalTitle;
+    tasksModalIcon.textContent = modalIcon;
+    tasksModalCount.textContent = `${filteredTasks.length} items`;
+    
+    // Render tasks list
+    if (filteredTasks.length === 0) {
+        tasksModalList.innerHTML = `
+            <div class="tasks-empty">
+                <div class="tasks-empty-icon">📭</div>
+                <div class="tasks-empty-text">No ${modalTitle.toLowerCase()} found</div>
+            </div>
+        `;
+    } else {
+        const statusLabels = {
+            'done': 'Done',
+            'inProgress': 'In Progress',
+            'uat': 'UAT',
+            'toDo': 'To Do'
+        };
+        
+        tasksModalList.innerHTML = filteredTasks.map(task => `
+            <div class="task-item">
+                <a href="https://mypaytm.atlassian.net/browse/${task.key}" target="_blank" class="task-item-key">${task.key}</a>
+                <div class="task-item-summary" title="${task.summary}">${task.summary}</div>
+                <div class="task-item-assignee">
+                    <div class="task-item-assignee-avatar">${task.assigneeAvatar || '--'}</div>
+                    <span>${task.assignee || 'Unassigned'}</span>
+                </div>
+                <div class="task-item-status ${task.status}">${statusLabels[task.status] || task.statusName || 'Unknown'}</div>
+            </div>
+        `).join('');
+    }
+    
+    // Show modal
+    tasksModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Close tasks modal - MUST be global
+window.closeTasksModal = function() {
+    const tasksModal = document.getElementById('tasksModal');
+    tasksModal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Setup tasks modal event listeners
+function setupTasksModalListeners() {
+    const tasksModal = document.getElementById('tasksModal');
+    const tasksModalClose = document.getElementById('tasksModalClose');
+    
+    if (tasksModalClose) {
+        tasksModalClose.addEventListener('click', window.closeTasksModal);
+    }
+    
+    if (tasksModal) {
+        tasksModal.addEventListener('click', (e) => {
+            if (e.target === tasksModal) window.closeTasksModal();
+        });
+    }
+    
+    // ESC key to close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('tasksModal');
+            if (modal && modal.classList.contains('active')) {
+                window.closeTasksModal();
+            }
+        }
+    });
+    
+    console.log('✅ Tasks modal listeners initialized');
+}
+
 // Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', initDashboard);
+document.addEventListener('DOMContentLoaded', () => {
+    initDashboard();
+    setupTasksModalListeners();
+});
+/* Build timestamp: 1769662359 */
+// Forced update Thu Jan 29 10:24:40 IST 2026
