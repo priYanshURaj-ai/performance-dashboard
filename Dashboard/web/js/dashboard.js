@@ -1386,6 +1386,11 @@ function setupTasksModalListeners() {
     });
 }
 
+// Make functions globally accessible for onclick handlers in HTML
+window.openTasksModal = openTasksModal;
+window.closeTasksModal = closeTasksModal;
+window.openMemberModal = openMemberModal;
+
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
