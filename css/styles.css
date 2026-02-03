@@ -1994,17 +1994,22 @@ body {
 
 .card-click-hint {
     position: absolute;
-    bottom: 8px;
+    bottom: 10px;
     right: 12px;
-    font-size: 0.65rem;
-    color: var(--text-muted);
+    font-size: 0.7rem;
+    color: var(--accent-cyan);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
     font-family: var(--font-mono);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transform: translateX(-5px);
 }
 
 .summary-card.clickable-card:hover .card-click-hint {
     opacity: 1;
+    transform: translateX(0);
 }
 
 /* ============================================
