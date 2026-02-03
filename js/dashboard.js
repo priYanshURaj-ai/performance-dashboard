@@ -15,7 +15,7 @@ let currentBoardId = null; // Selected board
 let sortConfig = { column: 'total', direction: 'desc' };
 let statusChart = null;
 let topPerformersChart = null;
-let activityTrendsChart = null;
+// activityTrendsChart removed
 
 // DOM Elements
 const elements = {
@@ -686,142 +686,9 @@ function updateSortIcons() {
 function renderCharts() {
     renderStatusChart();
     renderTopPerformersChart();
-    renderActivityTrendsChart();
 }
 
-// Daily Activity Trends chart
-function renderActivityTrendsChart() {
-    const ctx = document.getElementById('activityTrendsChart')?.getContext('2d');
-    if (!ctx || !dashboardData) return;
-
-    // Get daily activity data from n8n (real data)
-    const boardData = currentBoardId && dashboardData.boardsData?.[currentBoardId];
-    const dailyActivity = boardData?.dailyActivity || [];
-    
-    let days, issuesCreated, issuesResolved, activeMembersData;
-    
-    if (dailyActivity.length > 0) {
-        // Use REAL data from n8n workflow
-        days = dailyActivity.map(d => d.date);
-        issuesCreated = dailyActivity.map(d => d.created);
-        issuesResolved = dailyActivity.map(d => d.resolved);
-        activeMembersData = dailyActivity.map(d => d.activeMembers);
-        console.log('📊 Using real daily activity data from n8n');
-    } else {
-        // Fallback: Generate simulated data if n8n hasn't run yet
-        console.log('⚠️ No daily activity data - using fallback');
-        const members = dashboardData.members || [];
-        const summary = dashboardData.teamSummary?.[currentPeriod] || {};
-        const totalDone = summary.done || 0;
-        const totalCreated = summary.total || 0;
-        const activeMemberCount = members.filter(m => (m.metrics?.[currentPeriod]?.total || 0) > 0).length;
-        
-        days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue'];
-        const baseCreated = Math.ceil(totalCreated / 7);
-        const baseDone = Math.ceil(totalDone / 7);
-        const baseActive = Math.ceil(activeMemberCount * 0.8);
-        
-        issuesCreated = days.map((_, i) => Math.round(baseCreated * (i < 5 ? 1 : 0.3)));
-        issuesResolved = days.map((_, i) => Math.round(baseDone * (i < 5 ? 1 : 0.2)));
-        activeMembersData = days.map((_, i) => Math.round(baseActive * (i < 5 ? 1 : 0.4)));
-    }
-
-    if (activityTrendsChart) activityTrendsChart.destroy();
-
-    activityTrendsChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: days,
-            datasets: [
-                {
-                    label: 'Issues Created',
-                    data: issuesCreated,
-                    borderColor: 'rgba(0, 212, 255, 1)',
-                    backgroundColor: 'rgba(0, 212, 255, 0.1)',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: false,
-                    pointRadius: 4,
-                    pointBackgroundColor: 'rgba(0, 212, 255, 1)'
-                },
-                {
-                    label: 'Issues Resolved',
-                    data: issuesResolved,
-                    borderColor: 'rgba(0, 255, 136, 1)',
-                    backgroundColor: 'rgba(0, 255, 136, 0.1)',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: false,
-                    pointRadius: 4,
-                    pointBackgroundColor: 'rgba(0, 255, 136, 1)'
-                },
-                {
-                    label: 'Active Members',
-                    data: activeMembersData,
-                    borderColor: 'rgba(168, 85, 247, 1)',
-                    backgroundColor: 'rgba(168, 85, 247, 0.1)',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: false,
-                    pointRadius: 4,
-                    pointBackgroundColor: 'rgba(168, 85, 247, 1)',
-                    yAxisID: 'y1'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false
-            },
-            scales: {
-                x: {
-                    grid: { color: 'rgba(45, 58, 79, 0.5)', drawBorder: false },
-                    ticks: { color: '#94a3b8', font: { family: "'Outfit', sans-serif", size: 12 } }
-                },
-                y: {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                    beginAtZero: true,
-                    grid: { color: 'rgba(45, 58, 79, 0.5)', drawBorder: false },
-                    ticks: { color: '#94a3b8', font: { family: "'JetBrains Mono', monospace", size: 11 } },
-                    title: { display: true, text: 'Issues', color: '#94a3b8' }
-                },
-                y1: {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    beginAtZero: true,
-                    grid: { drawOnChartArea: false },
-                    ticks: { color: '#a855f7', font: { family: "'JetBrains Mono', monospace", size: 11 } },
-                    title: { display: true, text: 'Members', color: '#a855f7' }
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        color: '#94a3b8',
-                        padding: 20,
-                        usePointStyle: true,
-                        font: { family: "'Outfit', sans-serif", size: 12 }
-                    }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                    titleColor: '#fff',
-                    bodyColor: '#94a3b8',
-                    borderColor: '#2d3a4f',
-                    borderWidth: 1,
-                    padding: 12
-                }
-            }
-        }
-    });
-}
+// Daily Activity Trends chart - REMOVED
 
 // Status distribution chart
 function renderStatusChart() {
