@@ -425,7 +425,14 @@ function renderHeader() {
 // ENHANCED: Bandwidth Overview with Task-Based Calculation
 // ================================================================
 function renderBandwidthOverview() {
-    if (!dashboardData || !dashboardData.sprints) {
+    // Get board-specific data
+    const boardData = dashboardData?.boardsData?.[currentBoardId];
+    
+    // Use BOARD-SPECIFIC sprint data (from JIRA)
+    const boardSprints = boardData?.sprints;
+    const currentSprint = boardSprints?.current || dashboardData?.sprints?.current;
+    
+    if (!currentSprint) {
         elements.overviewSprintName.textContent = 'Awaiting Data...';
         elements.overviewSprintDay.textContent = '--';
         elements.highUtilizationList.innerHTML = '<div class="no-bandwidth-data">Run n8n workflow to load sprint data</div>';
@@ -433,17 +440,13 @@ function renderBandwidthOverview() {
         return;
     }
 
-    const currentSprint = dashboardData.sprints.current;
+    const members = boardData?.members || dashboardData?.members || [];
+    const hoursPerDay = dashboardData?.hoursPerDay || HOURS_PER_DAY;
     
-    // FIX: Get members from the CURRENTLY SELECTED BOARD, not global members
-    const boardData = dashboardData.boardsData?.[currentBoardId];
-    const members = boardData?.members || dashboardData.members || [];
-    const hoursPerDay = dashboardData.hoursPerDay || HOURS_PER_DAY;
-    
-    console.log(`📊 Sprint Overview: Board=${currentBoardId}, Members=${members.length}`);
+    console.log(`📊 Sprint Overview: Board=${currentBoardId}, Sprint=${currentSprint.name || currentSprint.label}, Members=${members.length}`);
 
-    // Update sprint badge
-    elements.overviewSprintName.textContent = currentSprint.label || 'Current Sprint';
+    // Update sprint badge with JIRA sprint name
+    elements.overviewSprintName.textContent = currentSprint.name || currentSprint.label || 'Current Sprint';
     elements.overviewSprintDay.textContent = `Day ${currentSprint.sprintDay || currentSprint.elapsedWorkingDays || '--'} of ${currentSprint.workingDays || '--'}`;
 
     // Calculate bandwidth for each member
