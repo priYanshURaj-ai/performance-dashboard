@@ -1973,3 +1973,263 @@ body {
     from { opacity: 1; }
     to { opacity: 0; }
 }
+
+/* ============================================
+   CLICKABLE SUMMARY CARDS
+   ============================================ */
+.clickable-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.clickable-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.25);
+}
+
+.clickable-card:active {
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   TASKS MODAL
+   ============================================ */
+.tasks-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 23, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.tasks-modal.active {
+    display: flex;
+}
+
+.tasks-modal-content {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 900px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.tasks-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    border-radius: 16px 16px 0 0;
+}
+
+.tasks-modal .modal-title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.tasks-modal .modal-icon {
+    font-size: 1.75rem;
+}
+
+.tasks-modal .modal-title-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.tasks-modal .modal-count {
+    background: var(--accent-cyan);
+    color: var(--bg-primary);
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.tasks-modal .modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.tasks-modal .modal-close:hover {
+    background: var(--bg-hover);
+    color: var(--accent-red);
+}
+
+.tasks-modal .modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.task-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: var(--bg-card);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.task-item:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-cyan);
+    transform: translateX(4px);
+}
+
+.task-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.task-key {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent-cyan);
+}
+
+.task-summary {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-assignee {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 150px;
+}
+
+.task-assignee .member-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+}
+
+.task-assignee .member-name {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+}
+
+.task-status {
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.task-status.done {
+    background: rgba(0, 255, 136, 0.15);
+    color: var(--status-done);
+}
+
+.task-status.inProgress {
+    background: rgba(0, 212, 255, 0.15);
+    color: var(--status-progress);
+}
+
+.task-status.uat {
+    background: rgba(255, 217, 61, 0.15);
+    color: var(--status-uat);
+}
+
+.task-status.toDo {
+    background: rgba(255, 159, 67, 0.15);
+    color: var(--status-todo);
+}
+
+.tasks-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}
+
+.tasks-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.tasks-empty-text {
+    font-size: 1.1rem;
+}
+
+/* Responsive adjustments for tasks modal */
+@media (max-width: 768px) {
+    .task-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .task-assignee {
+        min-width: auto;
+    }
+    
+    .tasks-modal-content {
+        max-height: 90vh;
+    }
+}

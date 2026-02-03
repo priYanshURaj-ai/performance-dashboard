@@ -98,7 +98,7 @@
 
         <!-- Summary Cards -->
         <div class="summary-cards">
-            <div class="summary-card total">
+            <div class="summary-card total clickable-card" onclick="openTasksModal('total')">
                 <div class="card-icon">📋</div>
                 <div class="card-content">
                     <span class="card-value" id="totalTasks">0</span>
@@ -106,7 +106,7 @@
                 </div>
                 <div class="card-bar"></div>
             </div>
-            <div class="summary-card done">
+            <div class="summary-card done clickable-card" onclick="openTasksModal('done')">
                 <div class="card-icon">✅</div>
                 <div class="card-content">
                     <span class="card-value" id="doneTasks">0</span>
@@ -115,7 +115,7 @@
                 </div>
                 <div class="card-bar"></div>
             </div>
-            <div class="summary-card progress">
+            <div class="summary-card progress clickable-card" onclick="openTasksModal('inProgress')">
                 <div class="card-icon">🔄</div>
                 <div class="card-content">
                     <span class="card-value" id="inProgressTasks">0</span>
@@ -124,7 +124,7 @@
                 </div>
                 <div class="card-bar"></div>
             </div>
-            <div class="summary-card uat">
+            <div class="summary-card uat clickable-card" onclick="openTasksModal('uat')">
                 <div class="card-icon">🧪</div>
                 <div class="card-content">
                     <span class="card-value" id="uatTasks">0</span>
@@ -133,7 +133,7 @@
                 </div>
                 <div class="card-bar"></div>
             </div>
-            <div class="summary-card todo">
+            <div class="summary-card todo clickable-card" onclick="openTasksModal('toDo')">
                 <div class="card-icon">📝</div>
                 <div class="card-content">
                     <span class="card-value" id="todoTasks">0</span>
@@ -378,6 +378,25 @@
                     <div class="top-tickets-list" id="topTicketsList">
                         <!-- Dynamic content -->
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks Modal -->
+    <div class="modal tasks-modal" id="tasksModal">
+        <div class="modal-content tasks-modal-content">
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <span class="modal-icon" id="tasksModalIcon">📋</span>
+                    <h2 id="tasksModalTitle">All Tasks</h2>
+                    <span class="modal-count" id="tasksModalCount">0 items</span>
+                </div>
+                <button class="modal-close" id="tasksModalClose">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="tasks-list" id="tasksModalList">
+                    <!-- Tasks will be dynamically inserted here -->
                 </div>
             </div>
         </div>
