@@ -434,8 +434,13 @@ function renderBandwidthOverview() {
     }
 
     const currentSprint = dashboardData.sprints.current;
-    const members = dashboardData.members || [];
+    
+    // FIX: Get members from the CURRENTLY SELECTED BOARD, not global members
+    const boardData = dashboardData.boardsData?.[currentBoardId];
+    const members = boardData?.members || dashboardData.members || [];
     const hoursPerDay = dashboardData.hoursPerDay || HOURS_PER_DAY;
+    
+    console.log(`📊 Sprint Overview: Board=${currentBoardId}, Members=${members.length}`);
 
     // Update sprint badge
     elements.overviewSprintName.textContent = currentSprint.label || 'Current Sprint';
